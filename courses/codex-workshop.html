@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Codex 四小時案例式工作坊・東華學生版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --teal: #0E7C7B;
+    --teal-dark: #0a5e5d;
+    --teal-tint: #e3efee;
+    --gold: #D9A441;
+    --gold-tint: #f6ecd4;
+    --cream: #F4ECD8;
+    --ink: #1A1A1A;
+    --ink-soft: #4a4a44;
+    --line: #e0d8c4;
+    --white: #fffdf8;
+    --sidebar-w: 280px;
+    --prompt-w: 400px;
+    --header-h: 60px;
+    --footer-h: 38px;
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ===== App shell ===== */
+  .app {
+    display: grid;
+    grid-template-rows: var(--header-h) 1fr var(--footer-h);
+    height: 100vh;
+  }
+
+  /* ===== Header ===== */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 22px;
+    background: var(--teal);
+    color: #fff;
+    box-shadow: 0 1px 0 rgba(0,0,0,.08);
+    z-index: 40;
+  }
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.28);
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .home-link:hover { background: rgba(255,255,255,.14); }
+  .header-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .header-title .sub { font-weight: 400; opacity: .8; font-size: 13px; margin-left: 8px; }
+  .progress {
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    background: rgba(255,255,255,.16);
+    padding: 5px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .menu-btn {
+    display: none;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.28);
+    color: #fff;
+    width: 40px; height: 40px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 19px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===== Main 3-column grid ===== */
+  .main {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr var(--prompt-w);
+    min-height: 0;
+  }
+  .main.no-right { grid-template-columns: var(--sidebar-w) 1fr; }
+
+  /* ----- Left: page list ----- */
+  .toc {
+    background: var(--white);
+    border-right: 1px solid var(--line);
+    overflow-y: auto;
+    padding: 14px 0 24px;
+  }
+  .toc-head {
+    padding: 6px 20px 12px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--ink-soft);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .toc-item {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 10px;
+    align-items: baseline;
+    padding: 9px 20px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background .12s;
+  }
+  .toc-item:hover { background: var(--teal-tint); }
+  .toc-item.active {
+    background: var(--teal-tint);
+    border-left-color: var(--teal);
+  }
+  .toc-num {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: var(--teal);
+    font-size: 15px;
+  }
+  .toc-item.active .toc-num { color: var(--teal-dark); }
+  .toc-body { min-width: 0; }
+  .toc-title {
+    font-size: 14.5px;
+    color: var(--ink);
+    line-height: 1.45;
+    font-weight: 500;
+  }
+  .toc-item.active .toc-title { font-weight: 700; }
+  .toc-cat {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--gold-tint);
+    padding: 1px 8px;
+    border-radius: 10px;
+  }
+
+  /* ----- Center: content ----- */
+  .content {
+    overflow-y: auto;
+    padding: 40px clamp(28px, 5vw, 72px) 60px;
+    scroll-behavior: smooth;
+  }
+  .content-inner { max-width: 760px; margin: 0 auto; }
+  .page-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .cat-badge {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--gold);
+    padding: 3px 13px;
+    border-radius: 20px;
+    letter-spacing: .5px;
+  }
+  .page-no {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .page-meta { flex-wrap: wrap; }
+  h1.page-title {
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.25;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 34px;
+    text-wrap: balance;
+  }
+  .block { margin-bottom: 36px; }
+  .block h2 {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 16px;
+    padding-bottom: 9px;
+    border-bottom: 2px solid var(--teal-tint);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .block h2::before {
+    content: "";
+    width: 9px; height: 9px;
+    border-radius: 2px;
+    background: var(--gold);
+    flex: none;
+  }
+  .points { list-style: none; }
+  .points li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 14px;
+    font-size: 17.5px;
+    color: var(--ink);
+  }
+  .points li::before {
+    content: "";
+    position: absolute;
+    left: 4px; top: 11px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+  ol.tasks { list-style: none; counter-reset: t; }
+  ol.tasks li {
+    position: relative;
+    padding-left: 42px;
+    margin-bottom: 15px;
+    font-size: 17.5px;
+    min-height: 30px;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.65;
+    counter-increment: t;
+  }
+  ol.tasks li::before {
+    content: counter(t);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 28px; height: 28px;
+    background: var(--teal);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex: none;
+  }
+
+  /* prose paragraphs */
+  .block .para {
+    font-size: 17.5px;
+    color: var(--ink);
+    margin-bottom: 14px;
+    text-wrap: pretty;
+  }
+  .block .para:last-child { margin-bottom: 0; }
+
+  /* plain bullet list */
+  ul.bullets { list-style: none; }
+  ul.bullets li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 12px;
+    font-size: 17.5px;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+  ul.bullets li::before {
+    content: "";
+    position: absolute;
+    left: 4px; top: 12px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+
+  /* checklist */
+  ul.checklist { list-style: none; }
+  ul.checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  ul.checklist li .box {
+    flex: none;
+    width: 24px; height: 24px;
+    border: 2px solid var(--teal);
+    border-radius: 6px;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--teal);
+    font-weight: 800;
+    font-size: 15px;
+    margin-top: 1px;
+  }
+  ul.checklist li.done .box { background: var(--teal); color: #fff; }
+  ul.checklist li.done { color: var(--ink-soft); }
+
+  /* inline code */
+  .content code, .notes-body code {
+    font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: .88em;
+    background: var(--gold-tint);
+    color: var(--teal-dark);
+    padding: 1px 6px;
+    border-radius: 5px;
+  }
+
+  /* center nav */
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 48px;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+  }
+  .pager button {
+    flex: 1;
+    max-width: 320px;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 13px 18px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--ink);
+    transition: border-color .15s, transform .1s;
+    font-family: inherit;
+  }
+  .pager button:hover:not(:disabled) { border-color: var(--teal); transform: translateY(-1px); }
+  .pager button:disabled { opacity: .35; cursor: default; }
+  .pager button.next { text-align: right; }
+  .pager .dir { font-size: 12px; color: var(--ink-soft); letter-spacing: 1px; }
+  .pager .lbl { font-size: 15px; font-weight: 600; color: var(--teal); display: block; margin-top: 2px; }
+
+  /* ----- Right: prompts ----- */
+  .prompts {
+    background: var(--white);
+    border-left: 1px solid var(--line);
+    overflow-y: auto;
+    padding: 34px 26px 50px;
+  }
+  .prompts-head {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--ink-soft);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .prompts-head::before {
+    content: "</>";
+    color: var(--teal);
+    font-weight: 900;
+    letter-spacing: 0;
+  }
+  .prompt-card {
+    border: 1.5px solid var(--line);
+    border-radius: 13px;
+    background: var(--white);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .prompt-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--teal-tint);
+    border-bottom: 1px solid var(--line);
+  }
+  .prompt-label { font-size: 14px; font-weight: 700; color: var(--teal-dark); line-height: 1.4; }
+  .copy-btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 13px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { background: var(--teal-dark); }
+  .copy-btn.copied { background: var(--gold); }
+  .prompt-text {
+    margin: 0;
+    padding: 14px 15px;
+    font-family: "SF Mono", "JetBrains Mono", "Cascadia Code", Consolas, "Noto Sans TC", monospace;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+    user-select: text;
+  }
+  details.notes {
+    margin-top: 24px;
+    border-top: 1px dashed var(--line);
+    padding-top: 16px;
+  }
+  details.notes summary {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  details.notes summary::-webkit-details-marker { display: none; }
+  details.notes summary::before {
+    content: "▸";
+    color: var(--gold);
+    transition: transform .15s;
+  }
+  details.notes[open] summary::before { transform: rotate(90deg); }
+  .notes-body {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    background: var(--gold-tint);
+    padding: 14px 16px 6px;
+    border-radius: 10px;
+  }
+  .notes-body .para { font-size: 14px; color: var(--ink-soft); margin-bottom: 10px; }
+  .notes-body ul.bullets li {
+    font-size: 14px;
+    color: var(--ink-soft);
+    padding-left: 18px;
+    margin-bottom: 9px;
+    line-height: 1.7;
+  }
+  .notes-body ul.bullets li::before {
+    width: 5px; height: 5px;
+    left: 2px; top: 10px;
+    background: var(--gold);
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    background: var(--ink);
+    color: #cfc9ba;
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 16px;
+    letter-spacing: .3px;
+  }
+  footer b { color: var(--gold); font-weight: 600; }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed;
+    bottom: calc(var(--footer-h) + 18px);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: #fff;
+    padding: 11px 22px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .scrim { display: none; }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    .app { height: 100vh; grid-template-rows: var(--header-h) 1fr var(--footer-h); }
+    .menu-btn { display: inline-flex; }
+    .main, .main.no-right { grid-template-columns: 1fr; overflow-y: auto; }
+
+    .toc {
+      position: fixed;
+      top: var(--header-h);
+      bottom: var(--footer-h);
+      left: 0;
+      width: min(82vw, 320px);
+      transform: translateX(-103%);
+      transition: transform .25s ease;
+      z-index: 50;
+      box-shadow: 8px 0 30px rgba(0,0,0,.18);
+    }
+    .toc.open { transform: translateX(0); }
+    .scrim.show {
+      display: block;
+      position: fixed;
+      inset: var(--header-h) 0 var(--footer-h) 0;
+      background: rgba(0,0,0,.4);
+      z-index: 45;
+    }
+
+    .content { padding: 28px 22px 30px; overflow: visible; }
+    .prompts {
+      border-left: none;
+      border-top: 8px solid var(--cream);
+      overflow: visible;
+      padding: 28px 22px 50px;
+    }
+    .pager button { max-width: none; }
+    .header-title .sub { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <button class="menu-btn" id="menuBtn" aria-label="頁面清單">☰</button>
+    <a class="home-link" href="../index.html">← 課程總覽</a>
+    <div class="header-title" data-screen-label="講義標題">Codex 四小時案例式工作坊<span class="sub">東華學生版</span></div>
+    <div class="progress" id="progress">— / —</div>
+  </header>
+
+  <div class="main" id="main">
+    <nav class="toc" id="toc" aria-label="頁面清單">
+      <div class="toc-head">全部 49 頁</div>
+      <div id="tocList"></div>
+    </nav>
+
+    <main class="content" id="content" data-screen-label="講義內容">
+      <div class="content-inner" id="contentInner"></div>
+    </main>
+
+    <aside class="prompts" id="prompts" aria-label="可複製 Prompt"></aside>
+  </div>
+
+  <footer>
+    <span>本課架構參考自 <b>537sonic《Codex 四小時案例式工作坊》</b>，內容為國立東華大學學生重寫。</span>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="toast" id="toast">已複製到剪貼簿</div>
+
+<script src="pages-data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var PAGES = window.HANDOUT_PAGES || [];
+  var TOTAL_DECLARED = 49; // 預計總頁數，用於進度顯示
+
+  var els = {
+    tocList: document.getElementById("tocList"),
+    tocHead: document.querySelector(".toc-head"),
+    content: document.getElementById("content"),
+    contentInner: document.getElementById("contentInner"),
+    prompts: document.getElementById("prompts"),
+    main: document.getElementById("main"),
+    progress: document.getElementById("progress"),
+    toc: document.getElementById("toc"),
+    scrim: document.getElementById("scrim"),
+    menuBtn: document.getElementById("menuBtn"),
+    toast: document.getElementById("toast")
+  };
+
+  var currentIndex = 0;
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function idxById(id) {
+    for (var i = 0; i < PAGES.length; i++) if (PAGES[i].id === id) return i;
+    return -1;
+  }
+
+  // escape, then apply **bold** and `code`
+  function fmt(s) {
+    return esc(s)
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>");
+  }
+
+  // Render an array of text lines into grouped HTML:
+  //  "1." / "2."     -> ordered list
+  //  "[ ]" / "[x]"   -> checklist
+  //  "- " / "* "     -> bullet list
+  //  otherwise       -> paragraph
+  function renderBlocks(arr) {
+    if (!arr || !arr.length) return "";
+    var html = "", openTag = "";
+    function close() { if (openTag) { html += openTag; openTag = ""; } }
+    arr.forEach(function (raw) {
+      var line = String(raw);
+      var mCheck = line.match(/^[-*]?\s*\[([ xX])\]\s*(.*)$/);
+      var mOrder = line.match(/^(\d+)[\.、)]\s*(.*)$/);
+      var mBullet = line.match(/^[-*]\s+(.*)$/);
+      if (mCheck) {
+        if (openTag !== "</ul-ck>") { close(); html += '<ul class="checklist">'; openTag = "</ul-ck>"; }
+        var done = mCheck[1].toLowerCase() === "x";
+        html += '<li class="' + (done ? "done" : "") + '"><span class="box">' + (done ? "✓" : "") + '</span><span>' + fmt(mCheck[2]) + '</span></li>';
+      } else if (mOrder) {
+        if (openTag !== "</ol>") { close(); html += '<ol class="tasks">'; openTag = "</ol>"; }
+        html += '<li>' + fmt(mOrder[2]) + '</li>';
+      } else if (mBullet) {
+        if (openTag !== "</ul>") { close(); html += '<ul class="bullets">'; openTag = "</ul>"; }
+        html += '<li>' + fmt(mBullet[1]) + '</li>';
+      } else {
+        close();
+        html += '<p class="para">' + fmt(line) + '</p>';
+      }
+    });
+    close();
+    return html.replace(/<\/ul-ck>/g, "</ul>");
+  }
+
+  /* ---------- Render left page list ---------- */
+  function buildToc() {
+    els.tocHead.textContent = "全部 " + TOTAL_DECLARED + " 頁（已收錄 " + PAGES.length + "）";
+    var html = "";
+    for (var i = 0; i < PAGES.length; i++) {
+      var p = PAGES[i];
+      html += '<div class="toc-item" data-idx="' + i + '">' +
+                '<div class="toc-num">' + esc(p.id) + '</div>' +
+                '<div class="toc-body">' +
+                  '<div class="toc-title">' + esc(p.title || "(未命名)") + '</div>' +
+                  (p.category ? '<span class="toc-cat">' + esc(p.category) + '</span>' : '') +
+                '</div>' +
+              '</div>';
+    }
+    els.tocList.innerHTML = html;
+    els.tocList.querySelectorAll(".toc-item").forEach(function (el) {
+      el.addEventListener("click", function () {
+        goTo(parseInt(el.getAttribute("data-idx"), 10));
+        closeDrawer();
+      });
+    });
+  }
+
+  /* ---------- Render center ---------- */
+  function renderContent(p) {
+    var h = '<div class="page-meta">' +
+              (p.category ? '<span class="cat-badge">' + esc(p.category) + '</span>' : '') +
+              '<span class="page-no">第 ' + esc(p.id) + ' 頁</span>' +
+            '</div>' +
+            '<h1 class="page-title">' + esc(p.title || "") + '</h1>';
+
+    if (p.points && p.points.length) {
+      h += '<section class="block"><h2>本頁重點</h2>' + renderBlocks(p.points) + '</section>';
+    }
+    if (p.tasks && p.tasks.length) {
+      h += '<section class="block"><h2>學員動手任務</h2>' + renderBlocks(p.tasks) + '</section>';
+    }
+
+    // pager
+    var prev = PAGES[currentIndex - 1], next = PAGES[currentIndex + 1];
+    h += '<div class="pager">' +
+      '<button class="prev" ' + (prev ? '' : 'disabled') + '>' +
+        '<span class="dir">← 上一頁</span>' +
+        (prev ? '<span class="lbl">' + esc(prev.id) + '　' + esc(prev.title || "") + '</span>' : '') +
+      '</button>' +
+      '<button class="next" ' + (next ? '' : 'disabled') + '>' +
+        '<span class="dir">下一頁 →</span>' +
+        (next ? '<span class="lbl">' + esc(next.id) + '　' + esc(next.title || "") + '</span>' : '') +
+      '</button>' +
+    '</div>';
+
+    els.contentInner.innerHTML = h;
+    var pb = els.contentInner.querySelector(".pager .prev");
+    var nb = els.contentInner.querySelector(".pager .next");
+    if (pb && prev) pb.addEventListener("click", function () { goTo(currentIndex - 1); });
+    if (nb && next) nb.addEventListener("click", function () { goTo(currentIndex + 1); });
+  }
+
+  /* ---------- Render right (prompts + notes) ---------- */
+  function renderPrompts(p) {
+    var hasPrompts = p.prompts && p.prompts.length;
+    var hasNotes = !!p.notes;
+
+    if (!hasPrompts && !hasNotes) {
+      els.prompts.innerHTML = "";
+      els.prompts.style.display = "none";
+      els.main.classList.add("no-right");
+      return;
+    }
+    els.prompts.style.display = "";
+    els.main.classList.remove("no-right");
+
+    var h = "";
+    if (hasPrompts) {
+      h += '<div class="prompts-head">可複製 Prompt</div>';
+      p.prompts.forEach(function (pr, i) {
+        h += '<div class="prompt-card">' +
+               '<div class="prompt-top">' +
+                 '<span class="prompt-label">' + esc(pr.label || ("Prompt " + (i + 1))) + '</span>' +
+                 '<button class="copy-btn" data-i="' + i + '">' +
+                   '<span class="ico">⧉</span><span class="txt">一鍵複製</span>' +
+                 '</button>' +
+               '</div>' +
+               '<pre class="prompt-text" id="ptext-' + i + '">' + esc(pr.text || "") + '</pre>' +
+             '</div>';
+      });
+    }
+    if (hasNotes) {
+      h += '<details class="notes"><summary>改編備註</summary>' +
+           '<div class="notes-body">' + renderBlocks(p.notes) + '</div></details>';
+    }
+    els.prompts.innerHTML = h;
+    els.prompts.scrollTop = 0;
+
+    els.prompts.querySelectorAll(".copy-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var i = btn.getAttribute("data-i");
+        var text = p.prompts[i].text || "";
+        copyText(text, btn);
+      });
+    });
+  }
+
+  /* ---------- Copy ---------- */
+  function copyText(text, btn) {
+    function ok() {
+      showToast();
+      if (btn) {
+        btn.classList.add("copied");
+        var txt = btn.querySelector(".txt");
+        var old = txt ? txt.textContent : "";
+        if (txt) txt.textContent = "已複製！";
+        setTimeout(function () {
+          btn.classList.remove("copied");
+          if (txt) txt.textContent = old;
+        }, 1600);
+      }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(ok, function () { legacyCopy(text, ok); });
+    } else {
+      legacyCopy(text, ok);
+    }
+  }
+  function legacyCopy(text, cb) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.top = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); cb && cb(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  var toastTimer;
+  function showToast() {
+    els.toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { els.toast.classList.remove("show"); }, 1700);
+  }
+
+  /* ---------- Navigation ---------- */
+  function goTo(i, skipHash) {
+    if (i < 0 || i >= PAGES.length) return;
+    currentIndex = i;
+    var p = PAGES[i];
+
+    renderContent(p);
+    renderPrompts(p);
+
+    // highlight toc + scroll into view (within sidebar only)
+    var items = els.tocList.querySelectorAll(".toc-item");
+    items.forEach(function (el, n) {
+      var on = n === i;
+      el.classList.toggle("active", on);
+      if (on) {
+        var top = el.offsetTop, bottom = top + el.offsetHeight;
+        if (top < els.toc.scrollTop || bottom > els.toc.scrollTop + els.toc.clientHeight) {
+          els.toc.scrollTop = top - els.toc.clientHeight / 2 + el.offsetHeight / 2;
+        }
+      }
+    });
+
+    els.content.scrollTop = 0;
+    els.progress.textContent = p.id + " / " + TOTAL_DECLARED;
+
+    if (!skipHash) {
+      if (("#" + p.id) !== location.hash) {
+        history.replaceState(null, "", "#" + p.id);
+      }
+    }
+  }
+
+  function syncFromHash() {
+    var id = location.hash.replace(/^#/, "");
+    var i = id ? idxById(id) : -1;
+    goTo(i >= 0 ? i : 0, true);
+  }
+
+  /* ---------- Drawer (mobile) ---------- */
+  function openDrawer() { els.toc.classList.add("open"); els.scrim.classList.add("show"); }
+  function closeDrawer() { els.toc.classList.remove("open"); els.scrim.classList.remove("show"); }
+  els.menuBtn.addEventListener("click", function () {
+    if (els.toc.classList.contains("open")) closeDrawer(); else openDrawer();
+  });
+  els.scrim.addEventListener("click", closeDrawer);
+
+  /* ---------- Keyboard ---------- */
+  document.addEventListener("keydown", function (e) {
+    var t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+    if (e.key === "ArrowLeft")  { goTo(currentIndex - 1); }
+    else if (e.key === "ArrowRight") { goTo(currentIndex + 1); }
+  });
+
+  window.addEventListener("hashchange", syncFromHash);
+
+  /* ---------- Init ---------- */
+  if (!PAGES.length) {
+    els.contentInner.innerHTML = '<p style="padding:40px;color:#888">尚未載入任何頁面資料。</p>';
+    els.progress.textContent = "0 / " + TOTAL_DECLARED;
+  } else {
+    buildToc();
+    syncFromHash();
+  }
+})();
+</script>
+</body>
+</html>
