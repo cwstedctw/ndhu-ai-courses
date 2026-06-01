@@ -124,6 +124,18 @@ a{color:inherit;text-decoration:none;}
 .member p b{color:var(--ink);}
 @media(max-width:760px){.team-grid{grid-template-columns:1fr;}.member{padding:28px;}}
 
+/* ---------- origin (real mirror team) ---------- */
+.origin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px;}
+.origin-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 24px;text-align:center;}
+.origin-card .drop{width:52px;height:52px;margin:0 auto 14px;display:block;}
+.origin-card .role{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold);}
+.origin-card h3{font-size:22px;font-weight:900;margin:3px 0 0;}
+.origin-card .tool{display:inline-block;margin:8px 0 12px;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:700;background:color-mix(in srgb,var(--teal) 12%,transparent);color:var(--teal-deep);}
+.origin-card p{font-size:15.5px;color:#34342f;}
+.origin-note{margin-top:30px;background:color-mix(in srgb,var(--gold) 13%,transparent);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:20px 24px;font-size:16.5px;color:#34342f;line-height:1.75;}
+.origin-note b{color:var(--ink);}
+@media(max-width:760px){.origin-grid{grid-template-columns:1fr;}}
+
 /* ---------- how work boxes ---------- */
 .howwork{background:var(--teal);color:#fdfdfb;}
 .howwork .eyebrow{color:#ffe9bd;}
@@ -467,6 +479,39 @@ a.mat:hover .mname::after{content:" ↗";font-size:14px;color:var(--gold);}
   </div>
 </section>
 
+<!-- ============ 靈感來源：真實的鏡像團隊 ============ -->
+<section class="section" id="origin">
+  <div class="wrap">
+    <span class="eyebrow">靈感來源</span>
+    <h2 class="sec-title">這套小隊，來自一支真實的 AI 團隊</h2>
+    <p class="sec-lead">這堂課不是憑空想的。它縮小自東華大學一位老師真的在用的「鏡像團隊」——三個 AI 夥伴，住在同一個資料夾裡，用花蓮的水名取名，靠互留紙條一起把事情做完。</p>
+    <div class="origin-grid">
+      <div class="origin-card">
+        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#0E7C7B"/></svg>
+        <div class="role">組長</div>
+        <h3>洄瀾</h3>
+        <span class="tool">Claude</span>
+        <p>想清楚要做什麼、分配工作、最後把關。團隊的統籌者。</p>
+      </div>
+      <div class="origin-card">
+        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#3a9b88"/></svg>
+        <div class="role">隊員</div>
+        <h3>立霧</h3>
+        <span class="tool">OpenAI Codex</span>
+        <p>手很快，擅長出圖、上網查資料，是團隊的快手。</p>
+      </div>
+      <div class="origin-card">
+        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#D9A441"/></svg>
+        <div class="role">隊員</div>
+        <h3>秀姑巒</h3>
+        <span class="tool">Google Antigravity</span>
+        <p>擅長同時開很多分身，把大任務拆成小塊一起做。</p>
+      </div>
+    </div>
+    <p class="origin-note">真實團隊有<b>三位</b>夥伴，跑在三個不同的 AI 上。這堂課為了讓你好上手，先縮成<b>兩位</b>（領隊 Codex＋隊員 Antigravity）——課堂預設把領隊取名「洄瀾」，就是借這位組長的名字。等你上手了，碰到更複雜的任務，一樣可以再加進第三位夥伴，讓小隊變大。</p>
+  </div>
+</section>
+
 <!-- ============ 教材清單 ============ -->
 <section class="section" id="materials">
   <div class="wrap">
@@ -534,13 +579,5 @@ a.mat:hover .mname::after{content:" ↗";font-size:14px;color:var(--gold);}
   <p class="made">打造你的 AI 雙人小隊 · 大學通識課程教材</p>
   <div class="draft">【洄瀾草稿】請老師看過再用</div>
 </footer>
-
-<div id="tweaks-root"></div>
-
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script type="text/babel" src="tweaks-panel.jsx"></script>
-<script type="text/babel" src="tweaks.jsx"></script>
 </body>
 </html>
