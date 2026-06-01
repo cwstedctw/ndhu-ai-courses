@@ -198,6 +198,9 @@ a{color:inherit;text-decoration:none;}
 .mat .mname{font-size:19px;font-weight:900;}
 .mat .mdesc{font-size:16px;color:#46463f;}
 @media(max-width:760px){.mat{grid-template-columns:40px 1fr;}.mat .mdesc{grid-column:1/-1;padding-left:62px;margin-top:-8px;}}
+a.mat{text-decoration:none;color:inherit;cursor:pointer;}
+a.mat:hover .mname{color:var(--teal);}
+a.mat:hover .mname::after{content:" ↗";font-size:14px;color:var(--gold);}
 
 /* ---------- start / entry ---------- */
 .start{background:var(--teal);color:#fff;text-align:center;border-radius:36px;padding:64px 28px;position:relative;overflow:hidden;}
@@ -471,31 +474,31 @@ a{color:inherit;text-decoration:none;}
     <h2 class="sec-title">你會拿到這些教材</h2>
     <p class="sec-lead">從學生到老師、從安裝到上課，需要的都備齊了。</p>
     <div class="mat-list">
-      <div class="mat">
+      <a class="mat" href="https://github.com/cwstedctw/ai-agent-team-course/blob/master/01_學生講義.md" target="_blank" rel="noopener">
         <svg class="mi" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="9" y="6" width="22" height="28" rx="3" stroke="#0E7C7B" stroke-width="2.4"/><path d="M14 14h12M14 20h12M14 26h8" stroke="#0E7C7B" stroke-width="2.4" stroke-linecap="round"/></svg>
         <div class="mname">學生講義</div>
         <div class="mdesc">上課跟著做的主教材，一步一步帶你完成。</div>
-      </div>
-      <div class="mat">
+      </a>
+      <a class="mat" href="https://github.com/cwstedctw/ai-agent-team-course/blob/master/02_安裝設定指南.md" target="_blank" rel="noopener">
         <svg class="mi" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="7" stroke="#0E7C7B" stroke-width="2.4"/><path d="M20 5v5M20 30v5M5 20h5M30 20h5M9 9l4 4M27 27l4 4M31 9l-4 4M13 27l-4 4" stroke="#0E7C7B" stroke-width="2.4" stroke-linecap="round"/></svg>
         <div class="mname">安裝設定指南</div>
         <div class="mdesc">照著做就能把環境裝好，連新手也不卡關。</div>
-      </div>
-      <div class="mat">
+      </a>
+      <a class="mat" href="https://github.com/cwstedctw/ai-agent-team-course/blob/master/03_教師手冊.md" target="_blank" rel="noopener">
         <svg class="mi" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M8 30V10l12-3 12 3v20l-12-3-12 3z" stroke="#0E7C7B" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 7v23" stroke="#0E7C7B" stroke-width="2.4"/></svg>
         <div class="mname">教師手冊</div>
         <div class="mdesc">給帶課老師的說明，含課程節奏與重點提示。</div>
-      </div>
-      <div class="mat">
+      </a>
+      <a class="mat" href="https://github.com/cwstedctw/ai-agent-team-course/blob/master/04_給AI的指令包.md" target="_blank" rel="noopener">
         <svg class="mi" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="7" y="9" width="26" height="22" rx="3" stroke="#0E7C7B" stroke-width="2.4"/><path d="M13 17l4 3-4 3M21 24h6" stroke="#0E7C7B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <div class="mname">給 AI 的指令包</div>
         <div class="mdesc">可直接複製貼上的指令範本，照著用就行。</div>
-      </div>
-      <div class="mat">
+      </a>
+      <a class="mat" href="https://github.com/cwstedctw/ai-agent-team-course/tree/master/範本團隊" target="_blank" rel="noopener">
         <svg class="mi" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="15" cy="16" r="5" stroke="#0E7C7B" stroke-width="2.4"/><circle cx="27" cy="16" r="5" stroke="#0E7C7B" stroke-width="2.4"/><path d="M7 31c0-5 4-8 8-8s8 3 8 8M19 31c0-5 4-8 8-8s8 3 8 8" stroke="#0E7C7B" stroke-width="2.4" fill="none"/></svg>
         <div class="mname">範本團隊</div>
         <div class="mdesc">一組已經設定好的範例小隊，照著改就能用。</div>
-      </div>
+      </a>
     </div>
   </div>
 </section>
@@ -508,8 +511,8 @@ a{color:inherit;text-decoration:none;}
       <h2>選一個身分，現在就開始</h2>
       <p>不論你是要上課的學生，還是要帶課的老師，都從這裡進去。</p>
       <div class="start-btns">
-        <a class="btn btn-gold" href="#materials">我是學生 · 開始上課 <span class="arrow">→</span></a>
-        <a class="btn btn-ghost" href="#materials">我是老師 · 取得教材 <span class="arrow">→</span></a>
+        <a class="btn btn-gold" href="https://github.com/cwstedctw/ai-agent-team-course/blob/master/打造你的AI雙人小隊-學生手冊.pdf" target="_blank" rel="noopener">我是學生 · 開始上課 <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="https://github.com/cwstedctw/ai-agent-team-course" target="_blank" rel="noopener">我是老師 · 取得教材 <span class="arrow">→</span></a>
       </div>
       <svg class="start-waves" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 70c180 -30 360 -30 540 -6s360 40 540 24 200 -36 360 -28v100H0z" fill="#ffffff" opacity="0.07"/>
