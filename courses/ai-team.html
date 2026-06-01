@@ -134,6 +134,9 @@ a{color:inherit;text-decoration:none;}
 .origin-card p{font-size:15.5px;color:#34342f;}
 .origin-note{margin-top:30px;background:color-mix(in srgb,var(--gold) 13%,transparent);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:20px 24px;font-size:16.5px;color:#34342f;line-height:1.75;}
 .origin-note b{color:var(--ink);}
+.origin-video{margin:38px auto 4px;max-width:880px;width:100%;}
+.origin-video video{width:100%;display:block;border-radius:var(--radius);box-shadow:0 26px 60px -34px rgba(26,26,26,.5);background:#000;}
+.origin-video figcaption{margin-top:12px;text-align:center;font-size:14.5px;color:#6b6b62;}
 @media(max-width:760px){.origin-grid{grid-template-columns:1fr;}}
 
 /* ---------- how work boxes ---------- */
@@ -329,6 +332,46 @@ a.mat:hover .mname::after{content:" ↗";font-size:14px;color:var(--gold);}
   </div>
 </section>
 
+<!-- ============ 靈感來源：真實的鏡像團隊 ============ -->
+<section class="section section--tight" id="origin">
+  <div class="wrap">
+    <span class="eyebrow">靈感來源</span>
+    <h2 class="sec-title">這套小隊，來自一支真實的 AI 團隊</h2>
+    <p class="sec-lead">這堂課不是憑空想的。它縮小自東華大學一位老師真的在用的「鏡像團隊」——三個 AI 夥伴，住在同一個資料夾裡，用花蓮的水名取名，靠互留紙條一起把事情做完。</p>
+    <figure class="origin-video">
+      <video controls preload="none" playsinline poster="team-intro-poster.jpg">
+        <source src="team-intro.mp4" type="video/mp4" />
+        你的瀏覽器不支援影片播放，<a href="team-intro.mp4">點這裡直接觀看</a>。
+      </video>
+      <figcaption>約 2 分鐘，帶你認識這支鏡像團隊怎麼合作——這支影片本身，也是團隊用 AI 一起做出來的。</figcaption>
+    </figure>
+    <div class="origin-grid">
+      <div class="origin-card">
+        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#0E7C7B"/></svg>
+        <div class="role">組長</div>
+        <h3>洄瀾</h3>
+        <span class="tool">Claude</span>
+        <p>想清楚要做什麼、分配工作、最後把關。團隊的統籌者。</p>
+      </div>
+      <div class="origin-card">
+        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#3a9b88"/></svg>
+        <div class="role">隊員</div>
+        <h3>立霧</h3>
+        <span class="tool">OpenAI Codex</span>
+        <p>手很快，擅長出圖、上網查資料，是團隊的快手。</p>
+      </div>
+      <div class="origin-card">
+        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#D9A441"/></svg>
+        <div class="role">隊員</div>
+        <h3>秀姑巒</h3>
+        <span class="tool">Google Antigravity</span>
+        <p>擅長同時開很多分身，把大任務拆成小塊一起做。</p>
+      </div>
+    </div>
+    <p class="origin-note">真實團隊有<b>三位</b>夥伴，跑在三個不同的 AI 上。這堂課為了讓你好上手，先縮成<b>兩位</b>（領隊 Codex＋隊員 Antigravity）——課堂預設把領隊取名「洄瀾」，就是借這位組長的名字。等你上手了，碰到更複雜的任務，一樣可以再加進第三位夥伴，讓小隊變大。</p>
+  </div>
+</section>
+
 <!-- ============ 你會做出什麼 ============ -->
 <section class="section section--tight" id="team">
   <div class="wrap">
@@ -476,39 +519,6 @@ a.mat:hover .mname::after{content:" ↗";font-size:14px;color:var(--gold);}
         <p>領隊洄瀾（Codex）<span class="key">直接用電腦操作</span>，去驅動隊員太魯閣的視窗。需較新的 Windows / Mac，過程會接管你的畫面，課堂上當示範看就好。</p>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ============ 靈感來源：真實的鏡像團隊 ============ -->
-<section class="section" id="origin">
-  <div class="wrap">
-    <span class="eyebrow">靈感來源</span>
-    <h2 class="sec-title">這套小隊，來自一支真實的 AI 團隊</h2>
-    <p class="sec-lead">這堂課不是憑空想的。它縮小自東華大學一位老師真的在用的「鏡像團隊」——三個 AI 夥伴，住在同一個資料夾裡，用花蓮的水名取名，靠互留紙條一起把事情做完。</p>
-    <div class="origin-grid">
-      <div class="origin-card">
-        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#0E7C7B"/></svg>
-        <div class="role">組長</div>
-        <h3>洄瀾</h3>
-        <span class="tool">Claude</span>
-        <p>想清楚要做什麼、分配工作、最後把關。團隊的統籌者。</p>
-      </div>
-      <div class="origin-card">
-        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#3a9b88"/></svg>
-        <div class="role">隊員</div>
-        <h3>立霧</h3>
-        <span class="tool">OpenAI Codex</span>
-        <p>手很快，擅長出圖、上網查資料，是團隊的快手。</p>
-      </div>
-      <div class="origin-card">
-        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#D9A441"/></svg>
-        <div class="role">隊員</div>
-        <h3>秀姑巒</h3>
-        <span class="tool">Google Antigravity</span>
-        <p>擅長同時開很多分身，把大任務拆成小塊一起做。</p>
-      </div>
-    </div>
-    <p class="origin-note">真實團隊有<b>三位</b>夥伴，跑在三個不同的 AI 上。這堂課為了讓你好上手，先縮成<b>兩位</b>（領隊 Codex＋隊員 Antigravity）——課堂預設把領隊取名「洄瀾」，就是借這位組長的名字。等你上手了，碰到更複雜的任務，一樣可以再加進第三位夥伴，讓小隊變大。</p>
   </div>
 </section>
 
