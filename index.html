@@ -280,5 +280,52 @@
   <footer>
     本課架構參考自 <b>537sonic《Codex 四小時案例式工作坊》</b>，內容為國立東華大學學生重寫。
   </footer>
+
+  <!-- ===== GSAP 捲動動畫 ===== -->
+  <!-- GSAP 3.13.0：2025 Webflow 收購後 100% 免費（含 ScrollTrigger）。CDN 沒載到或使用者要求「減少動態」時，整段跳過、內容照常顯示。 -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    if (!window.gsap || !window.ScrollTrigger) return;            // 離線/CDN 掛 → 不動，內容仍可見
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;  // 無障礙：尊重減少動態
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // 進場：品牌列 → eyebrow → 標題 → 副標，依序柔和淡入上滑
+    gsap.timeline({ defaults: { ease: 'power3.out' } })
+      .from('.topbar',  { y: -18, opacity: 0, duration: 0.6 })
+      .from('.eyebrow', { y: 16,  opacity: 0, duration: 0.6 }, '-=0.20')
+      .from('.hero h1', { y: 24,  opacity: 0, duration: 0.7 }, '-=0.35')
+      .from('.hero p',  { y: 20,  opacity: 0, duration: 0.7 }, '-=0.45');
+
+    // 捲動觸發：課程小標題
+    gsap.from('.section-label', {
+      scrollTrigger: { trigger: '.courses', start: 'top 82%' },
+      y: 18, opacity: 0, duration: 0.6, ease: 'power2.out'
+    });
+
+    // 捲動觸發：課程卡片逐張上浮（clearProps 還原 inline 樣式，保住卡片 :hover 上浮）
+    gsap.from('.card', {
+      scrollTrigger: { trigger: '.courses', start: 'top 78%' },
+      y: 42, opacity: 0, duration: 0.7, ease: 'power3.out',
+      stagger: 0.14, clearProps: 'all'
+    });
+
+    // 細節：卡片橫幅方格底紋隨捲動輕微視差位移
+    gsap.utils.toArray('.banner-deco').forEach(function (deco) {
+      gsap.to(deco, {
+        backgroundPosition: '0px 46px', ease: 'none',
+        scrollTrigger: { trigger: deco.closest('.card'), start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    });
+
+    // 頁尾柔和淡入
+    gsap.from('footer', {
+      scrollTrigger: { trigger: 'footer', start: 'top 96%' },
+      y: 16, opacity: 0, duration: 0.6, ease: 'power2.out'
+    });
+  })();
+  </script>
 </body>
 </html>
