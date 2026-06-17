@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>科技藝術概論 114-2 期末影片 · AI 分析儀表板</title>
+<style>
+  :root{
+    --bg:#0f1220;--card:#181c2e;--card2:#1f2440;--ink:#eef1ff;--sub:#aab2d5;
+    --line:#2c3358;--blue:#4f7cff;--blue2:#7aa2ff;--amber:#f0a93b;--green:#39c08a;--radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0d1020,#11152a 40%,#0f1220);color:var(--ink);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 16px 64px}
+  header.top{text-align:center;padding:24px 14px 14px}
+  header.top .en{color:var(--sub);font-size:12.5px;letter-spacing:2px;text-transform:uppercase}
+  header.top h1{font-size:clamp(22px,5vw,34px);margin:6px 0}
+  header.top p.lead{color:var(--blue2);margin:8px auto 0;max-width:780px;font-size:15px}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0 4px}
+  .pill{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--sub)}
+  .pill b{color:var(--blue2)}
+  .note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:12px;
+    padding:12px 16px;margin:16px 0;color:var(--sub);font-size:13.5px}
+  .note b.hi{color:#f5c277}
+  .grid{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:780px){.grid{grid-template-columns:1fr 1fr}}
+  .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+  .thumb{position:relative;display:block;aspect-ratio:16/9;background:#000;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;opacity:.92;transition:.2s}
+  .thumb:hover img{opacity:1;transform:scale(1.03)}
+  .thumb .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .thumb .play span{width:54px;height:54px;border-radius:50%;background:rgba(220,30,40,.92);display:flex;align-items:center;justify-content:center}
+  .thumb .play span::after{content:"";border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:4px}
+  .thumb .grp{position:absolute;left:10px;top:10px;background:rgba(15,18,32,.82);border:1px solid var(--line);border-radius:8px;padding:3px 10px;font-size:12px;color:var(--blue2)}
+  .thumb .len{position:absolute;right:10px;bottom:10px;background:rgba(15,18,32,.82);border-radius:6px;padding:2px 8px;font-size:12px}
+  .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:11px;flex:1}
+  .body h3{margin:0;font-size:18px}
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+  .b{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+  .b.ok{background:rgba(57,192,138,.13);border-color:rgba(57,192,138,.4);color:#7ce0bb}
+  .b.info{background:rgba(79,124,255,.13);border-color:rgba(79,124,255,.4);color:var(--blue2)}
+  .b.warn{background:rgba(240,169,59,.13);border-color:rgba(240,169,59,.45);color:#f5c277}
+  .score{display:flex;gap:8px;background:#0d1126;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .score .s{flex:1;text-align:center}
+  .score .s .v{font-size:20px;font-weight:800;color:var(--blue2);line-height:1.1}
+  .score .s.tot .v{color:#7ce0bb}
+  .score .s .k{font-size:11px;color:var(--sub);margin-top:2px}
+  .axes{display:flex;flex-direction:column;gap:5px}
+  .ax{display:grid;grid-template-columns:84px 1fr 30px;align-items:center;gap:8px;font-size:11.5px;color:var(--sub)}
+  .ax .bar{height:8px;border-radius:99px;background:#0d1126;border:1px solid var(--line);overflow:hidden}
+  .ax .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--blue2))}
+  .ax .val{text-align:right;color:var(--ink)}
+  .fid{font-size:12px;color:var(--sub)}
+  .fid .lab{display:flex;justify-content:space-between;margin-bottom:4px}
+  .fid .bar{height:8px;border-radius:99px;background:#0d1126;border:1px solid var(--line);overflow:hidden}
+  .fid .bar i{display:block;height:100%;background:linear-gradient(90deg,#2c8f6b,var(--green))}
+  ul.obs{margin:0;padding-left:18px;font-size:13px}
+  ul.obs li{margin:3px 0}
+  ul.obs li.minus{color:var(--sub)}
+  .watch{margin-top:auto;text-align:center;text-decoration:none;background:var(--blue);color:#fff;font-weight:600;font-size:14px;padding:10px 14px;border-radius:10px}
+  .watch:hover{background:#3f6cf0}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:24px}
+  .sec h2{margin:0 0 6px;font-size:18px}
+  .sec p.sub{color:var(--sub);font-size:13px;margin:0 0 12px}
+  .rub{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:680px){.rub{grid-template-columns:1.2fr 1fr}}
+  .rub h4{margin:0 0 6px;color:var(--blue2);font-size:14px}
+  .rub ul{margin:0;padding-left:18px;font-size:13px;color:var(--sub)}
+  .rub ul li{margin:2px 0}
+  .steps{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
+  @media(min-width:680px){.steps{grid-template-columns:1fr 1fr}}
+  .step{display:flex;gap:10px;font-size:13px;color:var(--sub)}
+  .step .n{flex:none;width:26px;height:26px;border-radius:8px;background:var(--card2);border:1px solid var(--line);color:var(--blue2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .step b{color:var(--ink)}
+  footer.foot{text-align:center;color:var(--sub);font-size:12.5px;margin-top:24px;line-height:1.8}
+  footer.foot .dis{color:#f5c277}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="en">NDHU · Technology Art 114-2 · AI Video Analysis</div>
+    <h1>期末影片 · AI 分析儀表板</h1>
+    <p class="lead">AI 逐幀看完每一支影片，自動做了「切鏡分析 × 設計分鏡 vs 實際成片逐鏡比對 × 無人機偵測 × 旁白轉錄 × 規格檢核 × 多軸評分」。下面是每組的成果與 AI 評析。</p>
+    <div class="pills">
+      <span class="pill"><b>6</b> 組作品</span>
+      <span class="pill"><b>38+</b> 張設計vs實際並排對照</span>
+      <span class="pill"><b>逐秒</b> 切鏡＋抽幀</span>
+      <span class="pill"><b>3</b> 個 AI 獨立評分</span>
+    </div>
+  </header>
+
+  <div class="note">
+    下面的<b class="hi">分數是 AI 自動評分、僅供參考</b>——由三個 AI（洄瀾／立霧／秀姑巒）各自設計量表、獨立評再取平均。
+    <b style="color:#7ce0bb">正式成績與個別回饋一律由授課老師核定發布，本頁不代表最終分數。</b>徽章用「圖示＋文字」，色弱亦可辨。
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="sec">
+    <h2>AI 評分量表（主量表 · 三方調和）</h2>
+    <p class="sub">三個 AI 各自讀完全部資料、設計自己的量表、重評六組，最後調和成下面這份；獨立評分收斂在 ±3 分內。<b style="color:#f5c277">僅供參考。</b></p>
+    <div class="rub">
+      <div><h4>影片（40 分）</h4>
+        <ul>
+          <li>主題切題·無人機呈現 8</li><li>故事完整度·結構 6</li><li>角色與情感傳達 5</li>
+          <li>攝影·視覺·規格 6</li><li>剪輯與節奏 4</li><li>聲音·配樂·字幕 4</li><li>創意與原創性 3</li><li>分鏡落實·設計執行 4</li>
+        </ul></div>
+      <div><h4>簡報（20 分）</h4>
+        <ul>
+          <li>架構與內容完整度 6</li><li>分鏡表品質 5</li><li>視覺美感·16:9·規格 5</li><li>規範遵循（頁碼/AI記錄/原創）4</li>
+        </ul>
+        <h4 style="margin-top:10px">扣分地雷</h4>
+        <ul><li>藍色字體或整份 AI 亂格式 −10</li><li>用 AI 未註記提示詞/連結 −10%</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>AI 是怎麼分析的？</h2>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><b>切鏡＋逐秒抽幀</b>：偵測鏡頭切點、抽出時間命名影格（如 00m52s），把整支片攤平。</div></div>
+      <div class="step"><span class="n">2</span><div><b>設計 vs 實際逐鏡比對</b>：手繪分鏡一顆顆對上實際成片，看有沒有照分鏡拍（38+ 張並排對照）。</div></div>
+      <div class="step"><span class="n">3</span><div><b>無人機偵測</b>：逐段加亮放大，判定實體／相關畫面／概念交代。</div></div>
+      <div class="step"><span class="n">4</span><div><b>旁白轉錄＋規格＋多軸評分</b>：whisper 轉旁白逐字稿，檢核 1080p／片長，依量表打多軸分數。</div></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div>製作：科技藝術概論 114-2 · AI 影片分析（洄瀾／立霧／秀姑巒 多 AI 協作）</div>
+    <div class="dis">本頁分數為 AI 自動評分，僅供參考；最終評分與個別回饋由授課老師核定發布。</div>
+  </footer>
+</div>
+
+<script>
+const G=[
+ {n:"第一組",name:"室友房間有魔鬼",vid:"guoEl6b1ys0",len:"2:42",
+  badges:[["✓ 1080p","ok"],["✓ 片長合格","ok"],["◐ 無人機·相關畫面","info"],["有對白＋字幕","info"]],
+  pres:16.7,film:32.0,total:48.7,fid:90,fidLab:"高度",
+  axes:[["主題·無人機",4.5,8],["劇本敘事",6,7],["角色情感",4.5,5],["攝影視覺",5.5,7],["剪輯聲音",6,7],["設計執行",5.5,6]],
+  obs:[["宿舍恐怖喜劇，紅光打臉＋暗黑氛圍佳，字幕輔助內心戲。",0],["30 顆手繪分鏡，AI 比對 27 顆實拍，忠於分鏡。",0],["結尾以「操控無人機」字幕收尾，畫面未見無人機實體。",1]]},
+ {n:"第二組",name:"無法自拔",vid:"XueiQ5Ap-GQ",len:"1:29",
+  badges:[["✓ 1080p","ok"],["✓ 片長合格","ok"],["✓ 無人機·自製實體","ok"],["配樂·無對白","info"]],
+  pres:17.3,film:35.8,total:53.1,fid:92,fidLab:"高度",
+  axes:[["主題·無人機",8,8],["劇本敘事",6.5,7],["角色情感",4,5],["攝影視覺",6.5,7],["剪輯聲音",5.5,7],["設計執行",6,6]],
+  obs:[["自製實體無人機，真的飛上花蓮校園天空（中央山脈背景）。",0],["20 鏡逐鏡對上；結尾「黑線其實是充電線」反轉巧妙。",0],["未來可讓無人機眼睛更有表情、更生動。",1]]},
+ {n:"第三組",name:"來自無人機的禮物",vid:"q0eHoghMPsI",len:"3:25",
+  badges:[["◆ 2K 超規格","info"],["✓ 片長合格","ok"],["✓ 無人機·實體＋手持","ok"],["配樂 MV·字幕","info"]],
+  pres:15.8,film:33.5,total:49.3,fid:82,fidLab:"大致",
+  axes:[["主題·無人機",7,8],["劇本敘事",5.5,7],["角色情感",4.5,5],["攝影視覺",7,7],["剪輯聲音",5.5,7],["設計執行",5,6]],
+  obs:[["製作質感最高（2K、配樂 A Thousand Years、完整片尾），多地點取景。",0],["八個場景全落實；攀岩館有實體無人機＋手持近景。",0],["計畫原有對白、成片改無對白 MV，情感互動較難傳達。",1]]},
+ {n:"第四組",name:"破局",vid:"nUSPDlKNQqM",len:"3:03",
+  badges:[["✓ 1080p","ok"],["✓ 片長合格","ok"],["◐ 無人機·概念交代","info"],["對白＋中英雙語字幕","info"]],
+  pres:16.8,film:32.5,total:49.3,fid:90,fidLab:"高度",
+  axes:[["主題·無人機",4.5,8],["劇本敘事",6.5,7],["角色情感",4,5],["攝影視覺",5,7],["剪輯聲音",6,7],["設計執行",5.5,6]],
+  obs:[["致敬杜琪峰《神探》多重人格，戲中戲／偽紀錄片（CAM／REC 框）創意高、冷藍調沉穩。",0],["47 顆手繪分鏡，AI 比對成片高度照拍、節奏佳。",0],["以 CAM 監控畫面＋字幕交代「無人機錄影」概念，畫面未見實體；雙語字幕時間略短。",1]]},
+ {n:"第五組",name:"無人筊",vid:"atD0hjXT4HE",len:"1:26",
+  badges:[["✓ 1080p","ok"],["✓ 片長合格","ok"],["✓ 無人機·片尾核心梗","ok"],["⚠ 全片無對白","warn"]],
+  pres:15.8,film:27.7,total:43.5,fid:82,fidLab:"大致",
+  axes:[["主題·無人機",7,8],["劇本敘事",5,7],["角色情感",3,5],["攝影視覺",5.5,7],["剪輯聲音",3.5,7],["設計執行",4.5,6]],
+  obs:[["「無人機 × 擲筊」諧音梗有巧思；片尾筊落地變成黑色無人機，核心梗有拍出。",0],["廟宇實景參拜、月老殿、看手機條件，12 場逐鏡對上。",0],["全無對白＋演員反串阿嬤，脈絡較難意會；建議加台詞、結尾轉折稍突兀。",1]]},
+ {n:"第六組",name:"瘋狂早餐",vid:"zyqy_kfFW1g",len:"1:43",
+  badges:[["⚠ 720p（未達1080p）","warn"],["✓ 片長合格","ok"],["✓ 無人機·叼外帶","ok"],["AI 全生成","info"]],
+  pres:12.3,film:26.5,total:38.8,fid:95,fidLab:"高度",
+  axes:[["主題·無人機",7,8],["劇本敘事",4.5,7],["角色情感",3,5],["攝影視覺",3.5,7],["剪輯聲音",3.5,7],["設計執行",5,6]],
+  obs:[["一人獨力完成，勇於用 AI 全流程生成（Gemini→Flow→Wan AI→FlexClip），AI 記錄完整。",0],["5 鏡敘事與計畫秒數幾乎完全吻合；無人機懸停叼外帶有拍到。",0],["受 AI 技術限制畫面物理較不連貫；720p、過場字卡偏單調、可加配音。",1]]}
+];
+function bar(v,m){return Math.round(v/m*100)}
+const grid=document.getElementById("grid");
+grid.innerHTML=G.map(g=>`
+ <div class="card">
+  <a class="thumb" href="https://www.youtube.com/watch?v=${g.vid}" target="_blank" rel="noopener">
+    <img src="https://img.youtube.com/vi/${g.vid}/hqdefault.jpg" alt="${g.n} ${g.name}">
+    <span class="grp">${g.n}</span><span class="len">${g.len}</span><span class="play"><span></span></span>
+  </a>
+  <div class="body">
+    <h3>${g.name}</h3>
+    <div class="badges">${g.badges.map(b=>`<span class="b ${b[1]}">${b[0]}</span>`).join("")}</div>
+    <div class="score">
+      <div class="s"><div class="v">${g.pres.toFixed(1)}</div><div class="k">簡報 /20</div></div>
+      <div class="s"><div class="v">${g.film.toFixed(1)}</div><div class="k">影片 /40</div></div>
+      <div class="s tot"><div class="v">${g.total.toFixed(1)}</div><div class="k">AI 評分 /60</div></div>
+    </div>
+    <div class="axes">${g.axes.map(a=>`<div class="ax"><span>${a[0]}</span><span class="bar"><i style="width:${bar(a[1],a[2])}%"></i></span><span class="val">${a[1]}/${a[2]}</span></div>`).join("")}</div>
+    <div class="fid"><div class="lab"><span>照分鏡拍的吻合度（AI 逐鏡比對）</span><span>${g.fidLab}</span></div><div class="bar"><i style="width:${g.fid}%"></i></div></div>
+    <ul class="obs">${g.obs.map(o=>`<li class="${o[1]?'minus':''}">${o[0]}</li>`).join("")}</ul>
+    <a class="watch" href="https://www.youtube.com/watch?v=${g.vid}" target="_blank" rel="noopener">▶ 看影片</a>
+  </div>
+ </div>`).join("");
+</script>
+</body>
+</html>
