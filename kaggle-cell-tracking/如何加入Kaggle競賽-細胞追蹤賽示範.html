@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>怎麼加入一個 Kaggle 競賽 — 以細胞追蹤賽為例</title>
+<style>
+  /* ============ DESIGN TOKENS ============
+     方向：資料科學競技場 × 顯微鏡下的螢光細胞。
+     深色實驗室底 + 螢光綠細胞 + Kaggle 青。沉穩、現代、上課投影看得清楚。 */
+  :root{
+    --bg:#0e1418;            /* 顯微鏡視野的暗底 */
+    --bg-2:#141d23;
+    --panel:#1a242b;         /* 卡片面 */
+    --panel-2:#21303a;
+    --ink:#eef4f3;           /* 主文字 */
+    --ink-soft:#a9bcc0;      /* 次要文字 */
+    --line:#2c3d47;          /* 分隔線 */
+    --teal:#20beff;          /* Kaggle 青 */
+    --teal-deep:#1287c4;
+    --cell:#54e36b;          /* 螢光細胞綠 */
+    --cell-soft:#8af09a;
+    --amber:#f2b53b;         /* 提醒金 */
+    --rose:#ef6f6f;          /* 換你做 */
+    --me:#20beff;            /* 看我示範 */
+    --you:#ef8a5c;           /* 換你動手 */
+    --shadow:0 6px 24px rgba(0,0,0,.35);
+    --shadow-lg:0 18px 50px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.85;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  /* 細胞軌跡質感背景 */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:
+      radial-gradient(circle at 18% 24%, rgba(84,227,107,.10) 0 2px, transparent 3px),
+      radial-gradient(circle at 72% 38%, rgba(32,190,255,.08) 0 2px, transparent 3px),
+      radial-gradient(circle at 40% 78%, rgba(84,227,107,.06) 0 2px, transparent 3px),
+      radial-gradient(circle at 88% 80%, rgba(32,190,255,.06) 0 2px, transparent 3px);
+    background-size:200px 200px,260px 260px,180px 180px,240px 240px;
+  }
+  .mono{font-family:"SFMono-Regular","Consolas","Roboto Mono",monospace}
+
+  /* ============ 進度導覽軸 ============ */
+  .railnav{position:fixed;top:0;left:0;right:0;z-index:50;
+    background:rgba(14,20,24,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .railnav-inner{max-width:1180px;margin:0 auto;padding:10px 22px;display:flex;align-items:center;gap:14px}
+  .brand{font-weight:900;font-size:13.5px;letter-spacing:.5px;color:var(--teal);white-space:nowrap}
+  .brand b{color:var(--cell)}
+  .rail{display:flex;gap:5px;flex:1;flex-wrap:wrap;justify-content:flex-end}
+  .rail a{font-size:11.5px;font-weight:600;text-decoration:none;color:var(--ink-soft);
+    padding:4px 10px;border-radius:20px;border:1px solid transparent;transition:.2s;white-space:nowrap}
+  .rail a:hover{background:var(--panel-2);color:var(--ink)}
+
+  /* ============ 容器 ============ */
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  section{padding:62px 0;position:relative;z-index:1}
+  .anchor{position:relative;top:-58px;visibility:hidden}
+
+  /* ============ HERO ============ */
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    position:relative;overflow:hidden;padding:84px 0 50px;
+    background:radial-gradient(120% 80% at 78% 18%, rgba(20,40,40,.7), transparent 60%)}
+  .eyebrow{font-weight:800;font-size:12.5px;letter-spacing:3px;color:var(--cell);
+    text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:12px}
+  .eyebrow::before{content:"";width:38px;height:2px;background:var(--cell)}
+  .hero h1{font-size:clamp(36px,6.4vw,74px);line-height:1.06;font-weight:900;letter-spacing:-1px}
+  .hero h1 .hl{color:var(--teal);position:relative;white-space:nowrap}
+  .hero h1 .hl::after{content:"";position:absolute;left:-2%;right:-2%;bottom:4%;height:22%;
+    background:rgba(32,190,255,.22);z-index:-1;transform:rotate(-1deg)}
+  .hero .sub{font-size:clamp(17px,2.3vw,23px);color:var(--ink-soft);max-width:680px;margin:24px 0 34px;line-height:1.7}
+  .hero .sub b{color:var(--cell-soft);font-weight:700}
+  .hero-meta{display:flex;gap:12px;flex-wrap:wrap}
+  .chip{font-size:13px;font-weight:600;padding:8px 15px;border-radius:30px;background:var(--panel);
+    border:1px solid var(--line);color:var(--ink-soft);display:flex;align-items:center;gap:7px;box-shadow:var(--shadow)}
+  .chip .dot{width:8px;height:8px;border-radius:50%}
+  .scrollcue{margin-top:46px;font-size:12px;letter-spacing:2px;color:var(--ink-soft);
+    display:flex;align-items:center;gap:10px;animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* ============ 圖例 ============ */
+  .legend{display:flex;gap:12px;flex-wrap:wrap;margin:34px 0 0;font-size:13.5px}
+  .legend .lg{display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;
+    background:var(--panel);border:1px solid var(--line)}
+  .legend .badge{font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:7px;color:#06222b}
+
+  /* ============ 段落抬頭 ============ */
+  .kicker{font-weight:800;font-size:12px;letter-spacing:2px;color:var(--teal);margin-bottom:12px;text-transform:uppercase}
+  h2.scene-title{font-size:clamp(26px,3.8vw,40px);font-weight:900;line-height:1.18;letter-spacing:-.5px;margin-bottom:14px}
+  .lead{font-size:17.5px;color:var(--ink-soft);max-width:780px;margin-bottom:6px}
+
+  /* ============ STEP 卡片 ============ */
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);overflow:hidden;margin-bottom:26px}
+  .step-head{display:flex;align-items:center;gap:18px;padding:24px 28px;border-bottom:1px dashed var(--line)}
+  .step-num{font-weight:900;font-size:12px;color:#06222b;background:var(--teal);min-width:58px;height:58px;
+    border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;flex-shrink:0}
+  .step-num small{font-size:8.5px;font-weight:700;opacity:.75;letter-spacing:1px}
+  .step-num b{font-size:23px}
+  .step-head .ht{flex:1}
+  .step-head h3{font-size:21px;font-weight:800;margin-bottom:3px;letter-spacing:-.3px}
+  .step-head .who{font-size:13.5px;color:var(--ink-soft)}
+  .mode-badge{font-size:11.5px;font-weight:800;padding:6px 12px;border-radius:9px;color:#06222b;white-space:nowrap;flex-shrink:0}
+  .mode-me{background:var(--me)}
+  .mode-you{background:var(--you)}
+  .step-body{padding:22px 28px 26px}
+  .step-body p{margin-bottom:12px}
+  .step-body ul{margin:6px 0 12px;padding-left:20px}
+  .step-body li{margin-bottom:7px}
+  .step-body b{color:var(--cell-soft)}
+
+  /* 提示框 */
+  .callout{border-left:3px solid var(--amber);background:var(--bg-2);border-radius:0 12px 12px 0;
+    padding:14px 18px;margin:14px 0;font-size:15px;color:var(--ink-soft)}
+  .callout.warn{border-left-color:var(--rose)}
+  .callout.tip{border-left-color:var(--cell)}
+  .callout b{color:var(--ink)}
+
+  /* 程式碼 */
+  pre{background:#0a1014;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;
+    margin:12px 0;font-size:13px;line-height:1.65}
+  pre code{font-family:"SFMono-Regular","Consolas",monospace;color:#cfe6e2}
+  .cmt{color:#5f7d84}.kw{color:#7ad0ff}.str{color:#9fe6a6}.num{color:#f2b53b}
+
+  /* 表格 */
+  .tbl{width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:14.5px}
+  .tbl th,.tbl td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .tbl th{color:var(--teal);font-size:12.5px;letter-spacing:.5px;text-transform:uppercase}
+  .tbl td b{color:var(--cell-soft)}
+  .tbl tr:hover td{background:var(--bg-2)}
+
+  /* 4 步流程小圖 */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+  .flow .f{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:16px 14px;text-align:center}
+  .flow .f .ic{font-size:26px;margin-bottom:8px}
+  .flow .f h4{font-size:15px;font-weight:800;margin-bottom:4px;color:var(--teal)}
+  .flow .f p{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0}
+
+  /* 分數表 */
+  .scorebar{display:flex;align-items:center;gap:10px;margin:4px 0}
+  .scorebar .lab{font-size:13.5px;width:auto;min-width:210px}
+  .scorebar .track{flex:1;height:9px;background:var(--bg-2);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+  .scorebar .fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--cell))}
+  .scorebar .val{font-size:13px;font-weight:800;color:var(--cell-soft);width:46px;text-align:right}
+
+  /* CTA / 連結 */
+  .btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+  a.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14.5px;
+    padding:11px 20px;border-radius:30px;transition:.2s}
+  a.btn.primary{background:var(--teal);color:#06222b}
+  a.btn.primary:hover{background:var(--cell);transform:translateY(-1px)}
+  a.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  a.btn.ghost:hover{border-color:var(--teal);color:var(--teal)}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:40px 0 60px;color:var(--ink-soft);font-size:13.5px}
+  footer b{color:var(--ink)}
+  footer a{color:var(--teal);text-decoration:none}
+
+  @media (max-width:680px){
+    .flow{grid-template-columns:repeat(2,1fr)}
+    .scorebar .lab{min-width:0;width:130px;font-size:12px}
+    .step-head{flex-wrap:wrap}
+    .mode-badge{order:3}
+  }
+</style>
+</head>
+<body>
+
+<!-- 導覽 -->
+<nav class="railnav"><div class="railnav-inner">
+  <span class="brand">Kaggle 入門 · <b>細胞追蹤賽</b></span>
+  <div class="rail">
+    <a href="#what">這是什麼</a>
+    <a href="#s1">①註冊</a>
+    <a href="#s2">②加入</a>
+    <a href="#s3">③讀規則</a>
+    <a href="#s4">④開Notebook</a>
+    <a href="#s5">⑤跑出成績</a>
+    <a href="#s6">⑥提交</a>
+    <a href="#next">然後呢</a>
+  </div>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">資料科學第一堂課 · 動手做</div>
+  <h1>怎麼加入一個<br><span class="hl">Kaggle 競賽</span>？</h1>
+  <p class="sub">用一個<b>真實的世界級比賽</b>當活教材，從註冊到送出第一份成績，走一遍完整流程。今天的主角是 CZ Biohub 主辦、獎金 <b>6 萬美金</b>的「細胞追蹤」賽——但你學到的步驟，<b>任何 Kaggle 競賽都一樣</b>。</p>
+  <div class="hero-meta">
+    <span class="chip"><span class="dot" style="background:var(--cell)"></span>主題：3D 顯微影像細胞追蹤</span>
+    <span class="chip"><span class="dot" style="background:var(--teal)"></span>免裝環境：Kaggle 雲端附 GPU</span>
+    <span class="chip"><span class="dot" style="background:var(--amber)"></span>今天目標：成功提交一次</span>
+  </div>
+  <div class="legend">
+    <div class="lg"><span class="badge mode-me">看我示範</span>老師帶著走的步驟</div>
+    <div class="lg"><span class="badge mode-you">換你動手</span>你自己操作的地方</div>
+    <div class="lg"><span class="badge" style="background:var(--amber)">小提醒</span>容易卡住的眉角</div>
+  </div>
+  <div class="scrollcue">↓ 往下捲，開始</div>
+</div></header>
+
+<!-- 0 這是什麼 -->
+<span id="what" class="anchor"></span>
+<section><div class="wrap">
+  <div class="kicker">先搞懂今天在玩什麼</div>
+  <h2 class="scene-title">Kaggle 是什麼？這個比賽又在做什麼？</h2>
+  <p class="lead"><b>Kaggle</b> 是全世界最大的資料科學競賽平台。主辦方（公司、研究機構）丟出一份資料和一個問題，全球的人寫程式來解，誰的答案最準誰就贏。你不用裝任何軟體——所有程式都在 Kaggle 的雲端 Notebook 裡跑，還免費附 GPU。</p>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num"><small>本場</small><b>賽</b></div>
+      <div class="ht"><h3>Biohub — Cell Tracking During Development</h3>
+      <div class="who">CZ Biohub 主辦 · 研究級 Code 競賽 · 獎金 US$60,000</div></div>
+    </div>
+    <div class="step-body">
+      <p>科學家想研究<b>胚胎發育時細胞怎麼移動、分裂</b>，但要在 3D 顯微影片裡用人工一顆一顆追蹤上千顆細胞，曠日廢時。這個比賽就是要大家寫演算法自動做這件事：</p>
+      <div class="flow">
+        <div class="f"><div class="ic">🔬</div><h4>偵測</h4><p>在每個時間點找出每顆細胞的位置</p></div>
+        <div class="f"><div class="ic">🔗</div><h4>連線</h4><p>把同一顆細胞在前後時間點接起來</p></div>
+        <div class="f"><div class="ic">🌱</div><h4>分裂</h4><p>偵測一顆細胞分裂成兩顆的時刻</p></div>
+        <div class="f"><div class="ic">🧬</div><h4>譜系</h4><p>重建出整棵細胞家族樹</p></div>
+      </div>
+      <div class="callout tip">為什麼拿這題當教材？因為它<b>看得到、有畫面、有意義</b>（追蹤活細胞），又是真實在進行的世界級比賽。流程學起來，之後換成任何題目都一樣套。</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 1 註冊 -->
+<span id="s1" class="anchor"></span>
+<section style="background:var(--bg-2)"><div class="wrap">
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num"><small>STEP</small><b>1</b></div>
+      <div class="ht"><h3>註冊一個 Kaggle 帳號</h3><div class="who">用 Google 帳號一鍵登入最快</div></div>
+      <span class="mode-badge mode-you">換你動手</span>
+    </div>
+    <div class="step-body">
+      <ul>
+        <li>打開 <b>kaggle.com</b>，右上角按 <b>Register</b>。</li>
+        <li>選「Register with Google」，用你的 Google 帳號登入，最省事。</li>
+        <li>第一次登入要做一次手機簡訊驗證（Phone Verification）——<b>跑 Notebook 和提交都需要驗證過</b>，現在先做好。</li>
+      </ul>
+      <div class="callout warn"><b>眉角：</b>沒做手機驗證的話，之後 Notebook 的 GPU 開不了、也不能提交。第一次就先驗證起來，免得待會卡住。</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 2 加入比賽 -->
+<span id="s2" class="anchor"></span>
+<section><div class="wrap">
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num"><small>STEP</small><b>2</b></div>
+      <div class="ht"><h3>進到比賽頁，按「Join Competition」接受規則</h3><div class="who">沒加入＝看不到資料、不能交</div></div>
+      <span class="mode-badge mode-you">換你動手</span>
+    </div>
+    <div class="step-body">
+      <ul>
+        <li>進入比賽頁：<span class="mono" style="color:var(--cell-soft)">kaggle.com/competitions/biohub-cell-tracking-during-development</span></li>
+        <li>右上角按 <b>Join Competition</b> → 跳出規則，讀過後按 <b>I Understand and Accept</b>。</li>
+        <li>接受後，原本鎖住的 <b>Data</b> 分頁就解鎖了，也才能用這個比賽的 Notebook 提交。</li>
+      </ul>
+      <div class="callout"><b>比賽頁的 7 個分頁怎麼看：</b>
+        Overview（在幹嘛、怎麼評分）、Data（資料）、Code（別人公開的 Notebook）、Discussion（討論區）、Leaderboard（排行榜）、Rules（規則）。新手最該先看的是 <b>Overview</b> 和 <b>Code</b>。</div>
+      <div class="callout warn"><b>重要時程（本場）：</b>報名與組隊截止 <b>9/22</b>、最終提交 <b>9/29</b>。要拿名次得在截止前接受規則。純練習、過了截止也還能交著玩，只是不列入排名。</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 3 讀規則三件事 -->
+<span id="s3" class="anchor"></span>
+<section style="background:var(--bg-2)"><div class="wrap">
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num"><small>STEP</small><b>3</b></div>
+      <div class="ht"><h3>動手前，先讀懂三件事：資料、評分、繳交格式</h3><div class="who">這三件決定你的程式要長什麼樣</div></div>
+      <span class="mode-badge mode-me">看我示範</span>
+    </div>
+    <div class="step-body">
+      <p><b>① 資料長怎樣（Data 分頁）</b></p>
+      <ul>
+        <li>每筆樣本是一段 3D+時間的螢光顯微影片，存成 <span class="mono">.zarr</span> 資料夾，形狀約 <span class="mono">(T,Z,Y,X)=(100,64,256,256)</span>。</li>
+        <li>訓練集還附 <span class="mono">.geff</span> 標準答案；測試集只有影像。整包約 <b>87 GB</b>，但<b>不用下載</b>——在 Kaggle Notebook 裡直接掛上來讀就好。</li>
+      </ul>
+      <p style="margin-top:14px"><b>② 怎麼評分（Evaluation 分頁）</b></p>
+      <pre><code><span class="cmt"># 分數 = 連線正確度 + 0.1 × 細胞分裂偵測</span>
+score = adjusted_edge_jaccard + <span class="num">0.1</span> * division_jaccard</code></pre>
+      <p style="color:var(--ink-soft);font-size:14.5px">白話：主要看你「把細胞前後連對」的比例，再加一點「有沒有抓到細胞分裂」。分數可能超過 1.0（指標設計使然）。</p>
+      <p style="margin-top:14px"><b>③ 繳交格式（submission.csv）</b>——你的程式最後要吐出這個檔：</p>
+      <pre><code>id,dataset,row_type,node_id,t,z,y,x,source_id,target_id
+<span class="num">0</span>,44b6,node,<span class="num">1</span>,<span class="num">0</span>,<span class="num">32</span>,<span class="num">128</span>,<span class="num">128</span>,-<span class="num">1</span>,-<span class="num">1</span>   <span class="cmt"># 一顆細胞</span>
+<span class="num">1</span>,44b6,node,<span class="num">2</span>,<span class="num">1</span>,<span class="num">33</span>,<span class="num">130</span>,<span class="num">125</span>,-<span class="num">1</span>,-<span class="num">1</span>
+<span class="num">2</span>,44b6,edge,-<span class="num">1</span>,-<span class="num">1</span>,-<span class="num">1</span>,-<span class="num">1</span>,-<span class="num">1</span>,<span class="num">1</span>,<span class="num">2</span>      <span class="cmt"># 把 1 號連到 2 號</span></code></pre>
+      <ul>
+        <li><b>node 列</b>＝一顆細胞偵測，填 <span class="mono">node_id, t, z, y, x</span>。</li>
+        <li><b>edge 列</b>＝一條連線，填 <span class="mono">source_id, target_id</span>（指向 node_id）。</li>
+        <li><span class="mono">dataset</span> 要對上測試資料夾名稱；<b>每個測試樣本都要出現</b>。</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- 4 開 Notebook -->
+<span id="s4" class="anchor"></span>
+<section><div class="wrap">
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num"><small>STEP</small><b>4</b></div>
+      <div class="ht"><h3>開一個 Notebook，掛上資料，貼進起手式程式</h3><div class="who">不用裝 Python、不用下載 87GB</div></div>
+      <span class="mode-badge mode-me">看我示範</span>
+    </div>
+    <div class="step-body">
+      <p>最快的兩種起手方式，挑一個：</p>
+      <ul>
+        <li><b>A. 直接複製官方範例</b>：到 <b>Code</b> 分頁打開釘選的「Cell Tracking Getting Started w/ Nearest Neighbor」，右上角按 <b>Copy &amp; Edit</b>，它會把程式和資料都幫你掛好，按 Run 就能跑。</li>
+        <li><b>B. 用我們課堂版 Notebook</b>：本資料夾的 <span class="mono">demo_cell_tracking_baseline.ipynb</span>（繁中逐步註解版）。在 Kaggle 按 <b>New Notebook → File → Import</b> 上傳它，再到右側 <b>Add Input</b> 把本比賽資料掛上。</li>
+      </ul>
+      <div class="callout tip"><b>Add Input 是什麼？</b>就是「把這個比賽的資料掛進我的 Notebook」。掛好後，資料會出現在 <span class="mono">/kaggle/input/...</span> 路徑下，程式才讀得到。</div>
+      <div class="callout warn"><b>Code 競賽的硬規定：</b>提交用的 Notebook 必須<b>關閉網路</b>（Internet off）、執行 ≤ 12 小時、輸出檔名一定是 <span class="mono">submission.csv</span>。右側 Settings 把 Internet 關掉、要用 GPU 就把 Accelerator 開成 GPU。</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 5 跑出成績 -->
+<span id="s5" class="anchor"></span>
+<section style="background:var(--bg-2)"><div class="wrap">
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num"><small>STEP</small><b>5</b></div>
+      <div class="ht"><h3>Run All：讓程式跑出 submission.csv</h3><div class="who">課堂版約 50 秒跑完，會拿到 ~0.14 分</div></div>
+      <span class="mode-badge mode-me">看我示範</span>
+    </div>
+    <div class="step-body">
+      <p>我們的課堂版 baseline 用最樸素的「最近鄰連線法」，一條龍做四步：</p>
+      <div class="flow">
+        <div class="f"><div class="ic">📥</div><h4>① 讀影像</h4><p>解壓 .zarr，一個時間點一個時間點讀進來</p></div>
+        <div class="f"><div class="ic">🔬</div><h4>② 偵測</h4><p>平滑→取最亮 10%→連通元件→質心當細胞</p></div>
+        <div class="f"><div class="ic">🔗</div><h4>③ 連線</h4><p>相鄰時間點用匈牙利演算法配最近的細胞</p></div>
+        <div class="f"><div class="ic">💾</div><h4>④ 輸出</h4><p>所有 node＋edge 寫成 submission.csv</p></div>
+      </div>
+      <p>核心程式其實很短，看得懂的程度：</p>
+      <pre><code><span class="cmt"># ② 偵測：把一個 3D 體積變成一串細胞質心</span>
+smoothed = uniform_filter(vol, size=<span class="num">3</span>)          <span class="cmt"># 平滑去雜訊</span>
+binary   = smoothed > np.percentile(smoothed, <span class="num">90</span>)  <span class="cmt"># 取最亮的前 10%</span>
+labeled, n = label(binary)                       <span class="cmt"># 連通元件分群</span>
+
+<span class="cmt"># ③ 連線：相鄰時間點找總距離最小的一對一配對</span>
+dist = distance_matrix(prev, curr)               <span class="cmt"># 兩邊細胞兩兩距離(µm)</span>
+rows, cols = linear_sum_assignment(dist)         <span class="cmt"># 匈牙利演算法</span>
+edges = [(p,c) <span class="kw">for</span> p,c <span class="kw">in</span> zip(rows,cols) <span class="kw">if</span> dist[p,c] <= <span class="num">15</span>]</code></pre>
+      <p>按 <b>Save Version → Save &amp; Run All (Commit)</b>，讓它從頭乾淨跑一遍。跑完，<span class="mono">submission.csv</span> 就會出現在 Notebook 的 Output。</p>
+      <div class="btnrow">
+        <a class="btn primary" href="https://www.kaggle.com/code/inversion/cell-tracking-getting-started-w-nearest-neighbor" target="_blank">↗ 官方起手式 Notebook</a>
+        <a class="btn ghost" href="demo_cell_tracking_baseline.ipynb">📓 課堂版 Notebook（繁中註解）</a>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 6 提交 -->
+<span id="s6" class="anchor"></span>
+<section><div class="wrap">
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num"><small>STEP</small><b>6</b></div>
+      <div class="ht"><h3>提交，到排行榜看自己的分數</h3><div class="who">🎉 到這裡，你就正式參賽了</div></div>
+      <span class="mode-badge mode-you">換你動手</span>
+    </div>
+    <div class="step-body">
+      <ul>
+        <li>Notebook 跑完（Commit 成功）後，打開它的 <b>Output</b> 分頁，按 <b>Submit</b>。</li>
+        <li>等系統評分，跳到比賽的 <b>Leaderboard</b>，就看得到你的分數和排名。</li>
+        <li>同一份 Notebook 可以一直改、一直交——這就是 Kaggle 的玩法：<b>交一次、看分數、再改進</b>。</li>
+      </ul>
+      <div class="callout tip">第一次的分數高低<b>完全不重要</b>。重點是你已經把「註冊→加入→讀規則→寫程式→提交→看分數」整條路走完一遍了。剩下的就是慢慢把分數往上推。</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 然後呢 -->
+<span id="next" class="anchor"></span>
+<section style="background:var(--bg-2)"><div class="wrap">
+  <div class="kicker">交完第一份之後</div>
+  <h2 class="scene-title">然後呢？怎麼把分數往上推</h2>
+  <p class="lead">同一個比賽，公開的 Notebook 分數從 0.14 一路到 0.69。差別在哪？看看別人怎麼做，挑一個方向改進自己的。</p>
+
+  <div style="margin:22px 0 26px">
+    <div class="scorebar"><span class="lab">我們的課堂 baseline</span><div class="track"><div class="fill" style="width:21%"></div></div><span class="val">0.14</span></div>
+    <div class="scorebar"><span class="lab">Beginner guide（社群）</span><div class="track"><div class="fill" style="width:85%"></div></div><span class="val">0.58</span></div>
+    <div class="scorebar"><span class="lab">Metric-Aware Baseline</span><div class="track"><div class="fill" style="width:93%"></div></div><span class="val">0.64</span></div>
+    <div class="scorebar"><span class="lab">Data Model + EDA + Baseline</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="val">0.69</span></div>
+  </div>
+
+  <table class="tbl">
+    <tr><th>改進方向</th><th>現在的弱點</th><th>可以試什麼</th></tr>
+    <tr><td><b>偵測</b></td><td>固定亮度門檻太粗，貼太近的細胞算成一顆</td><td>peak_local_max、分水嶺、深度學習分割（Cellpose / StarDist）</td></tr>
+    <tr><td><b>連線</b></td><td>只看「最近」，細胞動快就接錯</td><td>加運動預測（卡爾曼濾波）、斷掉再接回（gap closing）</td></tr>
+    <tr><td><b>細胞分裂</b></td><td>完全沒處理，那 0.1× 的分數全丟了</td><td>偵測「一顆變兩顆」的 division 事件</td></tr>
+  </table>
+  <div class="callout">學習路徑建議：先把<b>課堂版跑通、交一次</b> → 再開官方範例對照看 → 然後挑「偵測」或「連線」<b>其中一個</b>小改一版、再交一次。每次只動一個地方，才看得出哪招有效。</div>
+</div></section>
+
+<footer><div class="wrap">
+  <p><b>關於這份教材</b>　以 Kaggle 競賽
+    <a href="https://www.kaggle.com/competitions/biohub-cell-tracking-during-development" target="_blank">Biohub - Cell Tracking During Development</a>
+    為教學範例，帶學生走完「加入一個 Kaggle 競賽」的完整流程。比賽資料採 CC0 公開授權。</p>
+  <p style="margin-top:8px">隨附 Notebook <span class="mono">demo_cell_tracking_baseline.ipynb</span> 的演算法構想，改編自官方起手式
+    <a href="https://www.kaggle.com/code/inversion/cell-tracking-getting-started-w-nearest-neighbor" target="_blank">Getting Started w/ Nearest Neighbor</a>（Apache-2.0 授權），為教學重寫並加上中文逐步解說。</p>
+  <p style="margin-top:8px;color:var(--ink-soft)">比賽數字（時程、獎金、評分、格式）擷取自 2026-06-30 的比賽頁；競賽進行中，內容可能更新，正式參賽請以官方頁面為準。</p>
+</div></footer>
+
+</body>
+</html>
