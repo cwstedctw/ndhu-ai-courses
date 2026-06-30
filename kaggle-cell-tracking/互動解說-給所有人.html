@@ -46,6 +46,7 @@
   .vexp .why b{color:var(--ink)}
 
   /* 圖例 + 場景 */
+  .picktip{font-size:14.5px;color:var(--teal);font-weight:700;margin:2px 0 10px;text-align:center}
   .legend{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0 6px;font-size:13.5px;color:var(--ink-soft);background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:11px 15px}
   .legend .it{display:flex;align-items:center;gap:7px}
   .legend .dot{width:13px;height:13px;border-radius:50%;border:2.5px solid var(--cell);background:#0e1418}
@@ -113,15 +114,7 @@
       <button class="vtab" data-v="3">合成版<small>我們的新法</small></button>
     </div>
     <div class="vbody">
-      <div class="vtop">
-        <div class="scorebox"><div class="num" id="snum">0.04</div><div class="cap">官方分數</div></div>
-        <div class="barwrap">
-          <div class="bartrack"><div class="barfill" id="sbar"></div></div>
-          <div class="barscale"><span>0（亂猜）</span><span>1（完美）</span></div>
-        </div>
-      </div>
-      <div class="vexp" id="vexp"></div>
-
+      <div class="picktip">👆 你選哪個版本，下面這張「追蹤圖」就跟著變——看紅線變少、綠線變多，就是變好了：</div>
       <div class="legend">
         <div class="it"><span class="dot"></span> ● ＝ 一顆細胞（某個時間點）</div>
         <div class="it"><span class="ln"></span> 綠線 ＝ <b style="color:var(--cell-soft)">追對了</b>（同一顆細胞前後接對）</div>
@@ -130,6 +123,15 @@
       </div>
       <svg class="scene" id="scene" viewBox="0 0 600 190" preserveAspectRatio="xMidYMid meet"></svg>
       <div class="countbar" id="countbar"></div>
+
+      <div class="vtop">
+        <div class="scorebox"><div class="num" id="snum">0.04</div><div class="cap">官方分數</div></div>
+        <div class="barwrap">
+          <div class="bartrack"><div class="barfill" id="sbar"></div></div>
+          <div class="barscale"><span>0（亂猜）</span><span>1（完美）</span></div>
+        </div>
+      </div>
+      <div class="vexp" id="vexp"></div>
 
       <div class="play">
         <button id="playbtn">▶ 從頭播一遍進步</button>
