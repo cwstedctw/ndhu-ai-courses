@@ -258,6 +258,17 @@ labels = watershed(-dist, markers, mask=binary)
     <div class="callout tip"><b>結論：我們自己發明的兩塊追蹤，貢獻 +0.330——比借來的偵測(+0.224)還多，是整條鏈裡最大的單一貢獻。</b> 這就是「站在巨人肩上、再加自己的新東西」的硬證據，不是抄一支 notebook。</div>
     <div class="callout warn">誠實但書：0.898 是<b>單一訓練樣本</b>的代理分數（比公開 LB 最高 0.687 還高，但 train≠隱藏測試集，真排行榜會不同）。不過這個對照實驗<b>內部乾淨</b>——同樣本同偵測只換追蹤，所以「+0.330 是我們加的」這個歸因是穩的。</div>
   </div>
+  <div class="card">
+    <p><b>★ 真的提交了：不是紙上談兵</b>（2026-06-30）</p>
+    <table class="tbl">
+      <tr><th>項目</th><th>內容</th></tr>
+      <tr><td>提交方法</td><td>合成版（雙向互惠連線＋物理對稱分裂閘）</td></tr>
+      <tr><td>提交檔</td><td>submission.csv（210,429 列，4 測試樣本）</td></tr>
+      <tr><td>提交方式</td><td>純 scipy/skimage、Internet off → 符合 Code 競賽規則；Ted 完成 Persona 身分驗證後送出</td></tr>
+      <tr><td>狀態</td><td><b>已提交 ✅</b>，Kaggle 在隱藏測試集（~199 樣本）私下重跑計算中</td></tr>
+      <tr><td>排行榜真分數</td><td>⏳ 官方計算中（更新於此）——這才是「真的有沒有進步」的最終答案</td></tr>
+    </table>
+  </div>
 </div></section>
 
 <!-- 9 重點 -->

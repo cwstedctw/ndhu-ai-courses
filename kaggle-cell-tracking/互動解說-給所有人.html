@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用 AI 解一個真實難題 — 互動解說（不用懂程式）</title>
+<style>
+  :root{--bg:#0e1418;--bg-2:#141d23;--panel:#1a242b;--panel-2:#21303a;--ink:#eef4f3;--ink-soft:#aebfc3;--line:#2c3d47;--teal:#20beff;--cell:#54e36b;--cell-soft:#8af09a;--amber:#f2b53b;--rose:#ef6f6f;--gpu:#c79bf0;--shadow:0 6px 24px rgba(0,0,0,.35)}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;color:var(--ink);background:var(--bg);line-height:1.9;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45;background-image:radial-gradient(circle at 18% 24%,rgba(84,227,107,.10) 0 2px,transparent 3px),radial-gradient(circle at 72% 38%,rgba(32,190,255,.08) 0 2px,transparent 3px);background-size:200px 200px,260px 260px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 22px;position:relative;z-index:1}
+  section{padding:42px 0}
+  .hero{padding:72px 0 24px;text-align:center}
+  .eyebrow{font-weight:800;font-size:12.5px;letter-spacing:3px;color:var(--cell);text-transform:uppercase;margin-bottom:16px}
+  h1{font-size:clamp(28px,5.2vw,52px);line-height:1.12;font-weight:900;letter-spacing:-1px}
+  h1 .hl{color:var(--teal)}
+  .sub{font-size:clamp(16px,2.2vw,21px);color:var(--ink-soft);max-width:680px;margin:18px auto 0}
+  .sub b{color:var(--cell-soft)}
+  h2{font-size:clamp(22px,3.4vw,32px);font-weight:900;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+  h2 .em{font-size:1.1em}
+  .lead{font-size:17px;color:var(--ink-soft);margin-bottom:14px}
+  p{margin-bottom:13px;font-size:16.5px}
+  b{color:var(--cell-soft)}
+  .analogy{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:14px 0;box-shadow:var(--shadow);font-size:16.5px}
+  .analogy .lab{font-weight:800;color:var(--amber);font-size:13px;letter-spacing:1px;display:block;margin-bottom:6px}
+
+  /* 互動版本探索器 */
+  .explorer{background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;margin:18px 0}
+  .vtabs{display:flex;flex-wrap:wrap;gap:0;background:var(--bg-2);border-bottom:1px solid var(--line)}
+  .vtab{flex:1;min-width:120px;border:none;background:transparent;color:var(--ink-soft);font-family:inherit;font-weight:800;font-size:14.5px;padding:14px 8px;cursor:pointer;transition:.18s;border-bottom:3px solid transparent;position:relative}
+  .vtab:hover{color:var(--ink);background:var(--panel-2)}
+  .vtab.on{color:var(--teal);border-bottom-color:var(--teal);background:var(--panel)}
+  .vtab small{display:block;font-size:11px;font-weight:600;opacity:.8;margin-top:2px}
+  .vbody{padding:22px 24px}
+  .vtop{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .scorebox{text-align:center;min-width:130px}
+  .scorebox .num{font-size:46px;font-weight:900;color:var(--cell-soft);line-height:1;transition:.3s}
+  .scorebox .cap{font-size:12px;color:var(--ink-soft);margin-top:4px}
+  .barwrap{flex:1;min-width:180px}
+  .bartrack{height:16px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .barfill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--cell));border-radius:10px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+  .barscale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:4px}
+  .vexp{margin-top:16px;font-size:16.5px;line-height:1.85}
+  .vexp .why{margin-top:10px;padding:11px 15px;border-left:3px solid var(--cell);background:var(--bg-2);border-radius:0 10px 10px 0;font-size:15px;color:var(--ink-soft)}
+  .vexp .why b{color:var(--ink)}
+  svg.scene{display:block;width:100%;height:170px;margin-top:8px;background:#0a1014;border:1px solid var(--line);border-radius:12px}
+  .scene-cap{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:6px}
+  .play{margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .play button{font-family:inherit;font-weight:700;font-size:14px;padding:9px 18px;border-radius:30px;border:1px solid var(--line);background:var(--teal);color:#06222b;cursor:pointer;transition:.15s}
+  .play button:hover{background:var(--cell)}
+  .play .hint{font-size:13px;color:var(--ink-soft)}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+  .trick{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+  .trick .ic{font-size:30px;margin-bottom:8px}
+  .trick h3{font-size:18px;font-weight:800;margin-bottom:6px;color:var(--teal)}
+  .trick p{font-size:15px;color:var(--ink-soft);margin:0}
+  .callout{border-left:3px solid var(--amber);background:var(--bg-2);border-radius:0 12px 12px 0;padding:14px 18px;margin:14px 0;font-size:15.5px;color:var(--ink-soft)}
+  .callout.win{border-left-color:var(--cell)} .callout b{color:var(--ink)}
+  .subrec{background:var(--panel);border:1px solid var(--cell);border-radius:16px;padding:18px 22px;box-shadow:var(--shadow)}
+  .subrec .row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .subrec .row:last-child{border-bottom:none}
+  .subrec .k{color:var(--ink-soft)} .subrec .v{font-weight:700;color:var(--cell-soft);text-align:right}
+  .lessons{counter-reset:l;list-style:none;padding:0;margin-top:6px}
+  .lessons li{counter-increment:l;position:relative;padding:11px 0 11px 42px;border-bottom:1px dashed var(--line);font-size:16px}
+  .lessons li::before{content:counter(l);position:absolute;left:0;top:11px;width:28px;height:28px;border-radius:9px;background:var(--teal);color:#06222b;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .lessons li b{color:var(--ink)}
+  footer{border-top:1px solid var(--line);margin-top:26px;padding:26px 0 60px;color:var(--ink-soft);font-size:13px}
+  footer a{color:var(--teal);text-decoration:none}
+  @media(max-width:620px){.two{grid-template-columns:1fr}.vtab{min-width:50%}}
+</style>
+</head>
+<body>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">不用懂程式 · 看得懂的 AI 解題</div>
+  <h1>我們怎麼教電腦<br><span class="hl">把每一顆細胞追到底</span></h1>
+  <p class="sub">一版比一版聰明的故事——點點看，你會看到<b>分數從 0.04 一路爬到 0.90</b>，而且每一步都用大白話告訴你「為什麼變更好」。</p>
+</div></header>
+
+<div class="wrap">
+
+<section>
+  <h2><span class="em">🎬</span> 這是什麼問題？</h2>
+  <div class="analogy">
+    <span class="lab">用生活來想</span>
+    想像一段<b>空拍演唱會的影片</b>：你要從頭到尾盯住「<b>每一個人</b>」走到哪、什麼時候有人離開、什麼時候<b>多了一個人</b>。
+    現在把「人」換成顯微鏡下的「<b>細胞</b>」、把「演唱會」換成「<b>發育中的胚胎</b>」，而且是 <b>3D 的、上千顆</b>——人工一顆一顆追會追到天亮。
+  </div>
+  <p>所以科學家想<b>教電腦自動做</b>。電腦做得好不好，有一個<b>分數（0～1，越高越好）</b>：它把細胞「前後連對」的比例越高、又有抓到「一顆變兩顆（分裂）」，分數就越高。我們的任務就是——<b>讓這個分數越來越高</b>。</p>
+</section>
+
+<section>
+  <h2><span class="em">🕹️</span> 點點看：四個版本，一版比一版聰明</h2>
+  <p class="lead">下面四顆按鈕，點哪個就看哪一版——分數會跳、下面的圖會變、還會用白話告訴你它做了什麼。</p>
+  <div class="explorer">
+    <div class="vtabs" id="vtabs">
+      <button class="vtab on" data-v="0">起步版<small>最樸素</small></button>
+      <button class="vtab" data-v="1">改進版<small>AI 出點子</small></button>
+      <button class="vtab" data-v="2">GPU 版<small>深度學習</small></button>
+      <button class="vtab" data-v="3">合成版<small>我們的新法</small></button>
+    </div>
+    <div class="vbody">
+      <div class="vtop">
+        <div class="scorebox"><div class="num" id="snum">0.04</div><div class="cap">官方分數</div></div>
+        <div class="barwrap">
+          <div class="bartrack"><div class="barfill" id="sbar"></div></div>
+          <div class="barscale"><span>0（亂猜）</span><span>1（完美）</span></div>
+        </div>
+      </div>
+      <div class="vexp" id="vexp"></div>
+      <svg class="scene" id="scene" viewBox="0 0 600 170" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="scene-cap" id="scap"></div>
+      <div class="play">
+        <button id="playbtn">▶ 從頭播一遍進步</button>
+        <span class="hint">（會自動從起步版一路點到合成版）</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="em">💡</span> 我們「自己發明」的兩招（白話）</h2>
+  <p class="lead">合成版最強，靠的不是抄別人——偵測（怎麼找到細胞）我們借了網路上厲害的公開做法，但「<b>怎麼連線、怎麼判斷分裂</b>」這兩招是我們自己想的：</p>
+  <div class="two">
+    <div class="trick">
+      <div class="ic">🤝</div><h3>雙向確認連線</h3>
+      <p>連線時不只「從前往後」找最近的，也「從後往前」再確認一次——<b>兩邊都同意才連</b>。像兩個人互相點頭「我們是同一隊」，比單方面猜準很多，密集的時候特別有用。</p>
+    </div>
+    <div class="trick">
+      <div class="ic">⚖️</div><h3>用物理判斷真假分裂</h3>
+      <p>一顆細胞分裂成兩顆時，兩顆會<b>往相反方向分開</b>（像用力一掰兩半）。我們用這個物理常識判斷：要是兩顆<b>不是</b>往相反方向，那就不是真分裂，只是剛好<b>擦身而過</b>——這樣就不會把「路過」誤認成「分裂」。</p>
+    </div>
+  </div>
+  <div class="callout win">這兩招加上去，分數從 0.57 跳到 <b>0.90</b>。我們特別做了一個對照實驗證明：<b>這多出來的進步，主要是我們自己發明的兩招的功勞，不是抄來的。</b></div>
+</section>
+
+<section>
+  <h2><span class="em">🚀</span> 我們真的去比賽了</h2>
+  <p class="lead">這不是紙上談兵——我們把最強的「合成版」<b>真的提交到 Kaggle</b>（全世界的資料科學競賽平台），讓它在<b>我們沒看過的資料</b>上跑，拿真正的成績。</p>
+  <div class="subrec">
+    <div class="row"><span class="k">比賽</span><span class="v">Biohub - Cell Tracking During Development</span></div>
+    <div class="row"><span class="k">提交方法</span><span class="v">合成版（雙向確認連線＋物理分裂判斷）</span></div>
+    <div class="row"><span class="k">提交檔</span><span class="v">submission.csv（210,429 列）</span></div>
+    <div class="row"><span class="k">狀態</span><span class="v" id="substatus">已提交 ✅，隱藏測試集計算中…</span></div>
+    <div class="row"><span class="k">排行榜分數</span><span class="v" id="subscore">⏳ 等待官方計算（約數小時）</span></div>
+  </div>
+  <p style="font-size:14.5px;color:var(--ink-soft);margin-top:10px">註：本地用訓練資料測得 0.90，但那會比真排行榜樂觀（沒看過的資料一定更難）。<b>排行榜分數才是「真的有沒有進步」的最終答案</b>——分數出來會更新在這裡。</p>
+</section>
+
+<section>
+  <h2><span class="em">🎒</span> 這堂課帶得走的（給每個人）</h2>
+  <ol class="lessons">
+    <li><b>會問問題，比會寫程式更重要</b>——先把「現在怎樣、想要怎樣、卡在哪」講清楚。</li>
+    <li><b>問不只一個 AI</b>，看大家是不是都指向同一招——很多人都說好的，通常錯不了。</li>
+    <li><b>判斷與決定，留給人</b>——AI 給選項，你挑哪個先做。</li>
+    <li><b>一定要驗證</b>——「看起來會」不等於「真的會」，要用對的尺量過。</li>
+    <li><b>一次只改一個地方</b>，才看得出哪一招有效。</li>
+    <li><b>站在巨人肩上</b>——先讀懂別人更厲害的做法，再加上自己的新東西。</li>
+  </ol>
+</section>
+
+</div>
+
+<footer><div class="wrap">
+  <p>配套教材：<a href="如何加入Kaggle競賽-細胞追蹤賽示範.html">入門：怎麼加入 Kaggle</a> ｜ <a href="用AI解真實問題-完整版.html">完整實錄（技術細節）</a> ｜ <a href="index.html">教學單元首頁</a></p>
+  <p style="margin-top:6px;color:var(--ink-soft)">比賽資料 CC0 公開；本頁為通識教學用，盡量用白話、不預設你會寫程式。2026-06-30。</p>
+</div></footer>
+
+<script>
+const VERS = [
+  { v:0, name:'起步版', score:0.04, color:'#ef6f6f',
+    exp:'<b>最樸素的方法</b>：每一格只把「最近的點」連起來，看到誰近就連誰。',
+    why:'<b>為什麼分數低？</b> 細胞一多就常常連錯人，而且完全看不出「一顆變兩顆」的分裂。',
+    scap:'連線很亂、常常連錯，也沒有分裂', quality:0 },
+  { v:1, name:'改進版', score:0.34, color:'#f2b53b',
+    exp:'我們<b>請一隊 AI 一起出點子</b>，加了三招：把黏在一起的細胞分開、發現細胞分裂、把斷掉的線接回來。',
+    why:'<b>為什麼變好？</b> 找到更多真的細胞、也開始抓到一些分裂，連線乾淨一點了。',
+    scap:'細胞找得多了、開始有分裂', quality:1 },
+  { v:2, name:'GPU 版', score:0.57, color:'#c79bf0',
+    exp:'改用一個<b>「受過訓練的 AI 眼睛」</b>（深度學習）來看顯微影像，幾乎每一顆真細胞都找得到。',
+    why:'<b>為什麼變好？</b> 找細胞找得超準（幾乎一個不漏）——代價是要用更強的電腦（GPU）。',
+    scap:'AI 的眼睛幾乎找到每一顆細胞', quality:2 },
+  { v:3, name:'合成版', score:0.90, color:'#54e36b',
+    exp:'<b>站在別人肩上</b>：偵測借網路上更強的公開做法，再加上<b>我們自己發明</b>的兩招——雙向確認連線、用物理判斷真假分裂。',
+    why:'<b>為什麼最好？</b> 細胞找得準、連線又乾淨、分裂也不再亂認——三件事一起到位。',
+    scap:'找得準＋連得乾淨＋分裂判斷對 = 最好', quality:3 }
+];
+
+const snum=document.getElementById('snum'), sbar=document.getElementById('sbar'),
+      vexp=document.getElementById('vexp'), scene=document.getElementById('scene'),
+      scap=document.getElementById('scap'), tabs=[...document.querySelectorAll('.vtab')];
+let cur=-1;
+
+// 畫一個簡單的「追蹤」示意圖：4 個時間點(欄)、細胞(圓)、連線(線)。品質越高線越乾淨、且有分裂。
+function drawScene(q){
+  const W=600,H=170, cols=4, colX=[80,220,380,520];
+  const rng=(s=>()=>(s=Math.sin(s*99991)*1e4, s-Math.floor(s)))(7+q); // 固定種子
+  let svg='';
+  // 時間軸標籤
+  for(let c=0;c<cols;c++) svg+=`<text x="${colX[c]}" y="160" fill="#5f7d84" font-size="11" text-anchor="middle">時間 ${c+1}</text>`;
+  // 每欄細胞數：品質越高越多（更接近真實）
+  const counts=[3,4,5,6][q]!==undefined?[ [2,2,2,2],[3,3,3,3],[4,4,4,5],[4,5,5,6] ][q]:[3,3,3,3];
+  const pts=[];
+  for(let c=0;c<cols;c++){
+    const n=counts[c], arr=[];
+    for(let i=0;i<n;i++){ const y=35+(i+0.5)*(105/n)+ (q<2? (rng()-0.5)*14:0); arr.push({x:colX[c], y}); }
+    pts.push(arr);
+  }
+  // 連線
+  for(let c=0;c<cols-1;c++){
+    const A=pts[c], B=pts[c+1];
+    for(let i=0;i<A.length;i++){
+      // 高品質：連到對應 index（乾淨）；低品質：連到隨機/最近（會交叉、會錯）
+      let j;
+      if(q>=2){ j=Math.min(i,B.length-1); }
+      else if(q===1){ j=Math.min(i,B.length-1); if(rng()<0.25) j=Math.floor(rng()*B.length); }
+      else { j=Math.floor(rng()*B.length); } // 起步版：亂連
+      const a=A[i], b=B[j];
+      const good = q>=2 || (q===1 && Math.abs(i-j)<=0);
+      svg+=`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${good?'#2c8a8f':'#ef6f6f'}" stroke-width="${good?2:1.6}" opacity="${good?0.9:0.7}"/>`;
+    }
+  }
+  // 分裂（一顆→兩顆）：改進版起有；合成版畫得最清楚、且正確
+  if(q>=1){
+    const c=1, A=pts[c][pts[c].length-1], B1=pts[c+1][pts[c+1].length-1], B2=pts[c+1][pts[c+1].length-2]||B1;
+    const col = q>=3?'#54e36b':'#f2b53b';
+    svg+=`<line x1="${A.x}" y1="${A.y}" x2="${B1.x}" y2="${B1.y}" stroke="${col}" stroke-width="2.4"/>`;
+    svg+=`<line x1="${A.x}" y1="${A.y}" x2="${B2.x}" y2="${B2.y}" stroke="${col}" stroke-width="2.4"/>`;
+    svg+=`<text x="${(A.x+B1.x)/2}" y="28" fill="${col}" font-size="11" text-anchor="middle">↳ 分裂</text>`;
+  }
+  // 細胞點
+  for(let c=0;c<cols;c++) for(const p of pts[c])
+    svg+=`<circle cx="${p.x}" cy="${p.y}" r="6" fill="#0e1418" stroke="${VERS[q].color}" stroke-width="2.5"/>`;
+  scene.innerHTML=svg;
+}
+
+function select(v, animate=true){
+  if(v===cur) return; cur=v;
+  tabs.forEach(t=>t.classList.toggle('on', +t.dataset.v===v));
+  const d=VERS[v];
+  vexp.innerHTML = d.exp + `<div class="why">${d.why}</div>`;
+  scap.textContent = d.scap;
+  sbar.style.width = (d.score*100)+'%';
+  drawScene(d.quality);
+  // 數字動畫
+  const start=parseFloat(snum.textContent)||0, end=d.score, t0=performance.now();
+  function step(t){ const k=Math.min((t-t0)/500,1); snum.textContent=(start+(end-start)*k).toFixed(2); if(k<1)requestAnimationFrame(step); }
+  if(animate) requestAnimationFrame(step); else snum.textContent=end.toFixed(2);
+}
+tabs.forEach(t=>t.addEventListener('click',()=>select(+t.dataset.v)));
+
+document.getElementById('playbtn').addEventListener('click',()=>{
+  let i=0; cur=-1; select(0);
+  const iv=setInterval(()=>{ i++; if(i>3){clearInterval(iv);return;} select(i); }, 1300);
+});
+
+select(0, false);
+</script>
+</body>
+</html>
