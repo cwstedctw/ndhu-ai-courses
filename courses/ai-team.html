@@ -125,7 +125,7 @@ a{color:inherit;text-decoration:none;}
 @media(max-width:760px){.team-grid{grid-template-columns:1fr;}.member{padding:28px;}}
 
 /* ---------- origin (real mirror team) ---------- */
-.origin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px;}
+.origin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:40px;}
 .origin-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 24px;text-align:center;}
 .origin-card .drop{width:52px;height:52px;margin:0 auto 14px;display:block;}
 .origin-card .role{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold);}
@@ -137,6 +137,7 @@ a{color:inherit;text-decoration:none;}
 .origin-video{margin:38px auto 4px;max-width:880px;width:100%;}
 .origin-video video{width:100%;display:block;border-radius:var(--radius);box-shadow:0 26px 60px -34px rgba(26,26,26,.5);background:#000;}
 .origin-video figcaption{margin-top:12px;text-align:center;font-size:14.5px;color:#6b6b62;}
+@media(max-width:900px){.origin-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:760px){.origin-grid{grid-template-columns:1fr;}}
 
 /* ---------- how work boxes ---------- */
@@ -337,7 +338,7 @@ a.mat:hover .mname::after{content:" ↗";font-size:14px;color:var(--gold);}
   <div class="wrap">
     <span class="eyebrow">靈感來源</span>
     <h2 class="sec-title">這套小隊，來自一支真實的 AI 團隊</h2>
-    <p class="sec-lead">這堂課不是憑空想的。它縮小自東華大學一位老師真的在用的「鏡像團隊」——三個 AI 夥伴，住在同一個資料夾裡，名字都取自花蓮的溪（立霧溪、秀姑巒溪……），靠互留紙條一起把事情做完。</p>
+    <p class="sec-lead">這堂課不是憑空想的。它縮小自東華大學一位老師真的在用的「鏡像團隊」——現在是四個 AI 夥伴，住在同一個資料夾裡，名字都取自花蓮的溪（立霧溪、秀姑巒溪、木瓜溪……），靠互留紙條一起把事情做完。</p>
     <figure class="origin-video">
       <video controls preload="none" playsinline poster="team-intro-poster.jpg">
         <source src="team-intro.mp4" type="video/mp4" />
@@ -374,8 +375,15 @@ a.mat:hover .mname::after{content:" ↗";font-size:14px;color:var(--gold);}
         <span class="tool">Google Antigravity</span>
         <p>擅長同時開很多分身，把大任務拆成小塊一起做。</p>
       </div>
+      <div class="origin-card">
+        <svg class="drop" viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 8c12 17 22 27 22 42a22 22 0 1 1-44 0c0-15 10-25 22-42z" fill="#7a6a4f"/></svg>
+        <div class="role">隊員</div>
+        <h3>木瓜溪</h3>
+        <span class="tool">OpenCode</span>
+        <p>負責便宜又大量的粗篩工作，先幫大家把資料篩過一輪。</p>
+      </div>
     </div>
-    <p class="origin-note">真實團隊有<b>三位</b>夥伴，跑在三個不同的 AI 上。這堂課為了讓你好上手，先縮成<b>兩位</b>（領隊 Codex＋隊員 Antigravity）——課堂預設把領隊取名「洄瀾」，就是借這位組長的名字。等你上手了，碰到更複雜的任務，一樣可以再加進第三位夥伴，讓小隊變大。</p>
+    <p class="origin-note">真實團隊現在有<b>四位</b>夥伴，跑在四個不同的 AI 上；一開始只有兩位，是任務一多才慢慢加進來的。這堂課為了讓你好上手，先縮成<b>兩位</b>（領隊 Codex＋隊員 Antigravity）——課堂預設把領隊取名「洄瀾」，就是借這位組長的名字。等你上手了，碰到更複雜的任務，一樣可以再加新夥伴，讓小隊變大。</p>
   </div>
 </section>
 
