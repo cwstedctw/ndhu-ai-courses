@@ -24,6 +24,14 @@
   .rail{display:flex;gap:4px;flex:1;flex-wrap:wrap;justify-content:flex-end}
   .rail a{font-size:11px;font-weight:600;text-decoration:none;color:var(--ink-soft);padding:4px 9px;border-radius:20px;transition:.2s;white-space:nowrap}
   .rail a:hover{background:var(--panel-2);color:var(--ink)}
+  .rail a.chapbtn{cursor:pointer}
+  .rail a.chapbtn.on{background:var(--teal);color:#06222b}
+  .chapnav{display:flex;justify-content:space-between;gap:12px;align-items:stretch;margin:26px 0 0;padding-top:24px;border-top:1px solid var(--line)}
+  .cn{font-family:inherit;font-weight:700;font-size:14.5px;padding:14px 20px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:.15s;max-width:49%;text-align:left;line-height:1.3}
+  .cn .lbl{display:block;font-size:11px;color:var(--ink-soft);font-weight:600;margin-bottom:2px}
+  .cn:hover{border-color:var(--teal);color:var(--teal)}
+  .cn.next{background:var(--teal);color:#06222b;border-color:var(--teal);text-align:right}
+  .cn.next .lbl{color:rgba(6,34,43,.7)}
   .wrap{max-width:1000px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
   section{padding:56px 0;position:relative;z-index:1}
   .anchor{position:relative;top:-58px;visibility:hidden}
@@ -69,6 +77,21 @@
   .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0;font-size:13px}
   .flow .pill{background:var(--bg-2);border:1px solid var(--line);border-radius:20px;padding:6px 13px;color:var(--ink-soft)}
   .flow .ar{color:var(--teal);font-weight:800}
+  .imgwrap{margin:16px 0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0a1014;box-shadow:var(--shadow)}
+  .imgwrap img{display:block;width:100%;height:auto}
+  .imgwrap .cap{font-size:13px;color:var(--ink-soft);padding:9px 14px;border-top:1px solid var(--line)}
+  .why{border-left:3px solid var(--teal);background:rgba(32,190,255,.06);border-radius:0 12px 12px 0;padding:13px 17px;margin:14px 0;font-size:14.5px;color:var(--ink-soft)}
+  .why .q{display:block;font-weight:800;color:var(--teal);font-size:12.5px;letter-spacing:1px;margin-bottom:5px}
+  .why b{color:var(--ink)}
+  .demo{background:var(--panel-2);border:1px solid var(--teal);border-radius:16px;padding:20px 22px;margin:16px 0;box-shadow:var(--shadow)}
+  .demo-t{font-weight:800;color:var(--teal);font-size:16px;margin-bottom:8px}
+  .demo-p{font-size:14.5px;color:var(--ink-soft);margin-bottom:12px}
+  .demo input[type=range]{width:100%;accent-color:var(--teal);margin:6px 0;cursor:pointer}
+  .demo-row{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;margin:12px 0;color:var(--ink-soft)}
+  .demo-row b{color:var(--cell-soft);font-size:19px;display:block}
+  .demo-dots{display:flex;flex-wrap:wrap;gap:4px;margin:12px 0;min-height:13px}
+  .demo-dots .d{width:11px;height:11px;border-radius:50%}
+  .demo-note{font-size:13.5px;color:var(--ink);background:var(--bg-2);border-radius:10px;padding:10px 14px;min-height:20px}
   footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--ink-soft);font-size:13px}
   footer a{color:var(--teal);text-decoration:none} footer b{color:var(--ink)}
   @media(max-width:680px){.agent{flex-direction:column}}
@@ -80,23 +103,39 @@
   <span class="brand">用 AI 解難題 · <b>完整實錄</b></span>
   <div class="rail">
     <a href="index.html">🏠 首頁</a>
-    <a href="#p">①問題</a><a href="#how">②方法</a><a href="#ai">③三AI</a><a href="#conv">④收斂</a>
-    <a href="#build">⑤實作</a><a href="#valid">⑥驗證</a><a href="#auto">⑦自動化</a>
-    <a href="#gpu">⑧GPU</a><a href="#combine">⑨合成</a><a href="#lesson">⑩重點</a><a href="#log">⑪步驟</a>
+    <a class="chapbtn on" data-ch="0">① 這是什麼問題</a><a class="chapbtn" data-ch="1">② 用 AI 找解法</a><a class="chapbtn" data-ch="2">③ 一步步衝分數</a><a class="chapbtn" data-ch="3">④ 帶得走的</a>
   </div>
 </div></nav>
 
 <header class="hero"><div class="wrap">
   <div class="eyebrow">生成式 AI 融入專業 · 完整案例</div>
   <h1>用 AI（和一隊 AI）<br>解一個<span class="hl">真實難題</span></h1>
-  <p class="sub">一個真實的 Kaggle 細胞追蹤賽，從 0.143 的陽春版開始：<b>問三個 AI 找解法 → 綜合 → 自己寫 → 用官方的尺驗證 → 全程自動化 → 再用 GPU 加碼</b>。這份記下每一個 stage 的細節，是「怎麼用 AI 把一個真問題從頭解到尾」的完整教材。</p>
+  <p class="sub">一個真實的 Kaggle 細胞追蹤賽，從 0.14 的陽春版開始：<b>問一隊 AI 找解法 → 綜合 → 自己寫 → 用官方的尺驗證 → 全程自動化 → GPU 加碼 → 發明新招上排行榜 → 換 SOTA 引擎挑戰更高</b>。這份把每一步「<b>改了什麼、為什麼、背後的道理</b>」都講給你聽——不用會寫程式也讀得懂。</p>
   <div class="scoreboard">
-    <div class="sb"><div class="n">0.021</div><div class="l">baseline 官方分數</div></div>
-    <div class="sb"><div class="n">→ 0.245</div><div class="l">改進版（官方驗證 ✓）</div></div>
-    <div class="sb"><div class="n">3</div><div class="l">AI 夥伴獨立獻策</div></div>
-    <div class="sb"><div class="n">100%</div><div class="l">官方 CLI 自動化</div></div>
+    <div class="sb"><div class="n">0.14</div><div class="l">官方起手式（起點）</div></div>
+    <div class="sb"><div class="n">0.701</div><div class="l">合成版（我們的發明）</div></div>
+    <div class="sb"><div class="n">→ 0.738</div><div class="l">robust（真實排行榜最佳）</div></div>
+    <div class="sb"><div class="n">0.85?</div><div class="l">下一關：ultrack 挑戰中</div></div>
   </div>
 </div></header>
+
+<!-- 0 問題定義 -->
+<span id="intro" class="anchor"></span>
+<section><div class="wrap">
+  <div class="kicker">先看懂 · 這是什麼問題</div>
+  <h2 class="scene-title">要教電腦做的一件事：把每一顆細胞，從頭追到底</h2>
+  <div class="imgwrap"><img src="img/microscope-embryo.webp" alt="光片顯微鏡下發育中的胚胎，許多發光的細胞"><div class="cap">這就是我們面對的畫面：一個發育中的胚胎，裡面上千顆會發光、會移動、會分裂的細胞。</div></div>
+  <div class="card">
+    <p><b>用生活想：</b>像看一段從天上拍演唱會的影片，你要一路盯著每一個人——他走到哪、什麼時候離場、什麼時候又多一個人。現在把「人」換成<b>細胞</b>、「演唱會」換成<b>正在長大的胚胎</b>，而且是<b>立體的、上千顆、還會一顆分裂成兩顆</b>。用手一顆一顆追，追到天亮也追不完。</p>
+    <p><b>電腦具體要交出什麼？</b>兩件事——這也是後面每一步都圍著轉的兩個字：</p>
+    <ul>
+      <li><b>偵測</b>：在每一個時間點，找出畫面裡每一顆細胞在哪。</li>
+      <li><b>追蹤</b>：把「同一顆細胞」在前後時間點<b>連起來</b>，還要認出「一顆分裂成兩顆」的時刻。</li>
+    </ul>
+    <div class="imgwrap"><img src="img/detect-track.webp" alt="左：在一張畫面找到細胞；右：把同一顆細胞跨時間連起來"><div class="cap">兩個半場：<b>偵測</b>（左）＝在每一張畫面找出細胞；<b>追蹤</b>（右）＝把同一顆細胞跨時間連成一條線。後面每一步，都是在把這兩件事做得更好。</div></div>
+    <div class="why"><span class="q">怎麼打分數？（0～1，像考試，越高越好）</span>官方用一把尺量電腦答得好不好：<b>「前後接對」的比例越高，分數越高</b>。但有個陷阱——<b>亂猜、多抓一堆假細胞會被倒扣</b>（後面第③章 ⑩ 會讓你親手拉桿玩玩看）。所以目標不是「抓越多越好」，而是<b>又準、又不囉唆</b>。這趟旅程，就是想辦法把分數從陽春的 <b>0.14</b> 一路往上推到 <b>0.738</b>、再挑戰更高。</div>
+  </div>
+</div></section>
 
 <!-- 1 問題 -->
 <span id="p" class="anchor"></span>
@@ -132,6 +171,7 @@
 <section><div class="wrap">
   <div class="kicker">Stage ③ · 分頭問三個 AI 夥伴（實況）</div>
   <h2 class="scene-title">同一題，同時丟給三個底層不同的 AI</h2>
+  <div class="imgwrap"><img src="img/ai-team.webp" alt="一隊 AI 圍著同一個問題各自出點子"><div class="cap">同一個問題，同時丟給幾個底層不同的 AI，各自獨立出點子——再看大家是不是都指向同一招（都指到的，通常錯不了）。</div></div>
   <div class="agent m"><div class="av">木瓜溪<br>OpenCode</div><div class="bd"><h4>快速腦力激盪</h4><div class="role">便宜、快、先把點子鋪開</div><p>U-Net 分割、<b>顯式偵測細胞分裂</b>、Kalman、軌跡篩選、ResNet 真假分類器。一句到位：「匈牙利只能 1:1，分裂直接漏掉，是 0.143 卡住主因。」</p></div></div>
   <div class="agent x"><div class="av">秀姑巒<br>Gemini</div><div class="bd"><h4>廣搜 + 多方案比較</h4><div class="role">覆蓋面、把選項攤開比</div><p>分割（Watershed/StarDist/Cellpose）、追蹤（TrackMate/btrack/<b>ultrack</b>＝主辦自家 SOTA/Linajea）、分裂偵測，附比較表與分階段路線圖、Kaggle 離線部署筆記。</p></div></div>
   <div class="agent l"><div class="av">立霧<br>Codex</div><div class="bd"><h4>web 研究 + 論文來源</h4><div class="role">上網查證、附可追出處</div><p>8 個方向皆附論文：<b>watershed 拆黏連</b>、global gap-closing、<b>division 規則</b>、還有神來一筆第 8 點：「用訓練集做<b>本地驗證</b>、metric-aware 後處理——後處理常比模型本體更貼評分。」</p></div></div>
@@ -221,6 +261,8 @@ labels = watershed(-dist, markers, mask=binary)
   <div class="kicker">Stage ⑧ · GPU 加碼</div>
   <h2 class="scene-title">GPU 讓 AI 用得起更強的方法：深度學習分割</h2>
   <p class="lead">CPU 的 watershed 是「手寫規則」。GPU 讓我們能跑<b>深度學習細胞分割 Cellpose</b>——一個在大量細胞影像上訓練過的神經網路。同一把官方尺，三方對照。</p>
+  <div class="imgwrap"><img src="img/cpu-vs-gpu.webp" alt="CPU 幾顆腦袋 vs GPU 一大群核心"><div class="cap">CPU＝幾顆很會「想」的腦袋（少而聰明、擅長邏輯判斷）；GPU＝一大群核心同時算（多而並行、擅長把幾百萬像素一次看完）。看任務挑工具，不是誰比較強。</div></div>
+  <div class="why"><span class="q">知其所以然：為什麼深度學習偏好 GPU？</span>深度學習「認圖」是<b>同一種簡單運算、在幾百萬個像素上重複做</b>——正好是 GPU「一大群核心同時算」的強項。用 CPU 做同一件事會慢到不切實際。所以重點不是「GPU 讓同一招變快」，而是<b>「GPU 讓你用得起原本跑不動的更強方法」</b>。</div>
   <div class="card" id="gpu-result">
     <table class="tbl">
       <tr><th>方法</th><th>官方 score</th><th>node_recall（撈到真細胞）</th><th>耗時</th></tr>
@@ -239,6 +281,7 @@ labels = watershed(-dist, markers, mask=binary)
   <div class="kicker">Stage ⑨ · 站在巨人肩上</div>
   <h2 class="scene-title">讀懂更強的公開解法，再 combine 出「新的」</h2>
   <p class="lead">真正的開發不是閉門造車——先去讀<b>比我們強的公開高分解法</b>（用 Kaggle CLI 直接 <span class="mono">kernels pull</span> 下載原始碼），再請團隊三個 AI 把它們＋我們的，synthesize 成一個<b>新組合</b>。重點：<b>不是抄</b>，是借一塊、自己加兩塊。</p>
+  <div class="imgwrap"><img src="img/giants-shoulders.webp" alt="小人站在發光巨人的肩膀上看向遠方"><div class="cap">站在巨人肩上：先讀懂比我們強的公開解法，再站上去、加上自己的新東西——才看得更遠，也才不是抄。</div></div>
   <div class="card">
     <p><b>三個 AI 各自的新設計（讀完公開解法後）</b>：</p>
     <ul>
@@ -248,6 +291,9 @@ labels = watershed(-dist, markers, mask=binary)
     </ul>
     <p><b>洄瀾綜合成一個新方法</b>（純 CPU）：借公開 <b>LB628 的 keep-Z 古典偵測</b>，再自己加兩塊<b>沒有任何公開 notebook 做過</b>的追蹤——<b>雙向互惠連線</b> ＋ <b>物理對稱分裂閘</b>。</p>
   </div>
+  <div class="imgwrap"><img src="img/reciprocal.webp" alt="兩顆細胞各伸一個箭頭指向對方"><div class="cap">第一招「雙向互惠連線」：不只從前往後找最近的，也從後往前再確認一次——<b>兩邊都指到對方才連</b>，密集時大幅減少接錯。</div></div>
+  <div class="imgwrap"><img src="img/cell-division.webp" alt="一顆細胞分裂成兩顆、往相反方向分開"><div class="cap">物理對稱分裂閘的直覺：真的分裂時，兩顆子細胞會往<b>相反方向</b>分開（像被輕輕掰成兩半）。不是往相反方向的，就不算分裂、只是剛好擦身而過——用這個物理常識擋掉假分裂。</div></div>
+  <div class="why"><span class="q">知其所以然：為什麼用「物理」而不是純資料？</span>純看資料，兩顆靠近的細胞和「一顆剛分裂的細胞」長得很像，很容易誤判。但<b>分裂有物理規律</b>：子細胞會沿相反方向、對稱地分開。把這個常識寫進規則當「守門員」，就能用很少的計算擋掉大量假分裂——這叫<b>用領域知識當約束</b>，常比硬堆模型更有效。</div>
   <div class="card">
     <p><b>★ 用「對照實驗（ablation）」嚴格證明：我們加的東西到底有沒有用</b>（同樣本、同偵測、只換追蹤）：</p>
     <table class="tbl">
@@ -272,6 +318,79 @@ labels = watershed(-dist, markers, mask=binary)
   </div>
 </div></section>
 
+<!-- 10 robust -->
+<span id="robust" class="anchor"></span>
+<section style="background:var(--bg-2)"><div class="wrap">
+  <div class="kicker">Stage ⑩ · 再上一層：泛化</div>
+  <h2 class="scene-title">0.701 → 0.738：讓它在「沒看過的胚胎」上也穩</h2>
+  <p class="lead">0.701 很好，但我們發現它在不同胚胎上時好時壞。改用 <b>5 個 train 樣本＋官方尺一起量</b>（比只看單一樣本更接近真實），再加兩招讓它更穩：</p>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>加的招</th><th>做法</th><th>為什麼有用</th></tr>
+      <tr><td><b>局部自適應正規化</b></td><td>用「這一小塊的亮度」當基準，而不是拿整張圖比</td><td>不同胚胎、不同深度亮度差很大；用局部基準，暗處的細胞也浮得出來</td></tr>
+      <tr><td><b>剪掉孤立節點</b></td><td>把「沒連上任何線」的偵測點刪掉</td><td>沒連上的點幾乎都是雜訊（假細胞），留著只會被扣分</td></tr>
+    </table>
+    <div class="why"><span class="q">知其所以然：為什麼「少而精」會贏？</span>官方分數裡有一項乘數 <span class="mono">×(1 − 0.1×節點膨脹比)</span>——你多預測的假細胞越多，這個乘數越小、分數被打越低。所以「拚命多抓」不會贏，<b>「抓得準、少廢話」才會</b>。robust 用<b>更少</b>節點（44541→42214）換到<b>更高</b>精準度（0.672→0.691）。</div>
+    <div class="demo">
+      <div class="demo-t">🎛️ 玩玩看：為什麼「多抓」反而扣分</div>
+      <p class="demo-p">假設你的連線品質固定（edge Jaccard = 0.80）。拉一下拉桿，看「多預測的假細胞」怎麼把分數一口口吃掉：</p>
+      <input type="range" id="pd-slider" min="0" max="40" value="0">
+      <div class="demo-row">
+        <span>多抓的假細胞<b id="pd-extra">0%</b></span>
+        <span>懲罰係數<b id="pd-mult">1.00</b></span>
+        <span>最終分數<b id="pd-score">0.80</b></span>
+      </div>
+      <div class="demo-dots" id="pd-dots"></div>
+      <div class="demo-note" id="pd-note"></div>
+      <p style="font-size:12px;color:var(--ink-soft);margin:8px 0 0">綠＝真細胞、紅＝多抓的假細胞。示意用，與官方公式精神相同：過度偵測會被乘上一個小於 1 的懲罰係數。</p>
+    </div>
+    <div class="callout tip">結果：5 樣本平均 0.6605 → 0.6779，真實排行榜 <b>0.701 → 0.738（+0.037）</b>。本地 5 樣本 novel≈0.66 對上真實 LB 0.701，代表這把「5 樣本的尺」量得準、能拿來預測排行榜。</div>
+  </div>
+</div></section>
+
+<!-- 11 解析度 -->
+<span id="res" class="anchor"></span>
+<section><div class="wrap">
+  <div class="kicker">Stage ⑪ · 一個被誤判的天花板</div>
+  <h2 class="scene-title">難樣本一直漏細胞——不是找不到，是被「黏在一起」了</h2>
+  <p class="lead">有些胚胎很密集，我們一直漏掉快一半的細胞（recall 0.51），一度以為古典法到頂了。後來查出真相：<b>是我們為了跑快、把圖縮太小，把靠近的細胞糊成一團了。</b></p>
+  <div class="imgwrap"><img src="img/resolution-merge.webp" alt="粗網格把兩顆細胞黏成一團、細網格分得開"><div class="cap">粗網格（左）把兩顆靠近的細胞看成一顆；看得細一點（右）就分得開了。</div></div>
+  <div class="card">
+    <p>原本 XY 方向<b>縮小 4 倍</b>再找細胞；改成<b>只縮 2 倍</b>（看得更細）後：</p>
+    <div class="flow"><span class="pill">難樣本 recall 0.51</span><span class="ar">→</span><span class="pill" style="color:var(--cell-soft)">0.745</span><span class="ar">一口氣拉起來</span></div>
+    <div class="why"><span class="q">知其所以然：解析度 vs recall 的權衡</span>把圖縮太狠＝省時間，但兩顆靠近的細胞會被壓成同一格、看起來像一顆（漏掉）。看得越細＝找得到越多真細胞，代價是<b>也冒出更多假的、而且更慢</b>。這是一個要調的旋鈕，<b>不是古典法的極限</b>——先前的「天花板」是自己縮圖縮出來的。</div>
+    <div class="callout warn">代價：看得細之後假細胞暴增（易樣本 13k→87k 個點），過度膨脹懲罰又把分數壓下去——這就帶出下一關。</div>
+  </div>
+</div></section>
+
+<!-- 12 計數校準 -->
+<span id="cap" class="anchor"></span>
+<section style="background:var(--bg-2)"><div class="wrap">
+  <div class="kicker">Stage ⑫ · 先抓多、再修剪</div>
+  <h2 class="scene-title">計數校準：既不漏、也不爆</h2>
+  <p class="lead">看得細之後「真細胞找齊了，但假細胞也一堆」。公開高分解法的關鍵一招：<b>先放寬抓多，再依分數把每部影片修剪到合理的細胞數</b>——稀疏胚胎少留、密集胚胎多留。</p>
+  <div class="card">
+    <div class="why"><span class="q">知其所以然：為什麼一個固定門檻不夠？</span>不同胚胎的細胞數差好幾倍。用同一個固定門檻，稀疏的會被抓太多（一堆假的）、密集的會被抓太少（漏一堆）。改成<b>「每部影片各給一個節點預算」</b>，放寬偵測先把真細胞都撈進來、再按分數修到預算內，就能兩邊都顧到。</div>
+    <p>加上這招，純 CPU 版本地推到 0.6928。但也看到<b>純 CPU 古典法的天花板大約在 0.74–0.75</b>——要再往上，得換更聰明的引擎。</p>
+  </div>
+</div></section>
+
+<!-- 13 ultrack -->
+<span id="ultrack" class="anchor"></span>
+<section><div class="wrap">
+  <div class="kicker">Stage ⑬ · 換更聰明的引擎（進行中）</div>
+  <h2 class="scene-title">ultrack：不急著選一個門檻，讓演算法自己挑</h2>
+  <p class="lead">前面每一步，我們都得「先選定一個門檻、一種偵測」，選錯就輸。<b>ultrack</b>（正好是這場比賽主辦 Royer lab 自家的 SOTA 工具、就是拍這批資料的同一組人）換了個思路：</p>
+  <div class="card">
+    <div class="why"><span class="q">知其所以然：多假設 + 全域最佳化</span>不要一開始就硬選一個門檻，而是<b>同時保留很多種可能的細胞分割（候選）</b>，再用「同一顆細胞在時間上要連貫」這個條件，讓一個<b>全域最佳化</b>（整數線性規劃 ILP）<b>一次挑出最合理的一整組</b>。這天生就解掉我們「看得細→假細胞爆量」的兩難——它會自己把不連貫的假細胞挑掉，不必再硬套計數預算。</div>
+    <ul>
+      <li><b>為什麼最對路</b>：這批資料就是 Royer lab 用光片顯微鏡拍的；官方評分也用他們的工具；主辦自己的示範解也是這個路數。用作者的工具解作者的題，最合理。</li>
+      <li><b>能離線跑</b>：內建免費解算器（不必付費授權），符合 Kaggle「提交時不能上網」的規則。</li>
+    </ul>
+    <div class="callout warn">狀態（誠實）：正在把它接上我們的管線、測 199 片測試資料的時間吃不吃得下。<b>就算最後沒衝到 0.85，這趟「怎麼一步步逼近、每一步為什麼」才是這份教材真正要教的。</b></div>
+  </div>
+</div></section>
+
 <!-- 9 重點 -->
 <span id="lesson" class="anchor"></span>
 <section><div class="wrap">
@@ -285,6 +404,8 @@ labels = watershed(-dist, markers, mask=binary)
     <li><b>把流程自動化</b>，迭代才快。</li>
     <li><b>一次只改一個地方</b>，才看得出哪招有效。</li>
     <li><b>需要時用 GPU 換更強的方法</b>。</li>
+    <li><b>先量再下結論，別急著照抄</b>——別人的招不一定適合你（計數校準對我們就是多餘的）。</li>
+    <li><b>撞牆先問「是不是自己設限」</b>——我們以為古典法到頂，其實是自己把圖縮糊了。</li>
   </ol></div>
 </div></section>
 
@@ -304,14 +425,70 @@ labels = watershed(-dist, markers, mask=binary)
     <li><b>本地驗證</b>：proxy 看方向 → 官方 metric 拿真分數（0.021 → 0.245）。</li>
     <li><b>全程自動化</b>：kaggle CLI OAuth + push/status/output。</li>
     <li><b>GPU 加碼</b>：Cellpose 深度學習分割三方對照。</li>
+    <li><b>站在巨人肩上</b>：讀公開高分解法、combine 出自己的新法（排行榜 0.701）。</li>
+    <li><b>再上一層泛化</b>：局部正規化＋剪孤立節點，排行榜 0.738。</li>
+    <li><b>找出真瓶頸</b>：解析度縮太狠把細胞黏住了→細解析度＋計數校準。</li>
+    <li><b>換 SOTA 引擎</b>：ultrack 多假設 ILP，挑戰更高（進行中）。</li>
     <li><b>寫成教材</b>：就是這份。</li>
   </ol>
 </div></section>
+
+<div class="wrap"><div class="chapnav" id="chapnav"></div></div>
 
 <footer><div class="wrap">
   <p><b>來源與致謝</b>　比賽：<a href="https://www.kaggle.com/competitions/biohub-cell-tracking-during-development" target="_blank">Biohub - Cell Tracking During Development</a>（CC0）。官方評分：<a href="https://github.com/royerlab/kaggle-cell-tracking-competition" target="_blank">royerlab/kaggle-cell-tracking-competition</a>（開源）。改進方向綜合自洄瀾、立霧、秀姑巒、木瓜溪四位 AI 夥伴；引用工具：<a href="https://imagej.net/plugins/trackmate/" target="_blank">TrackMate</a>、<a href="https://btrack.readthedocs.io/" target="_blank">btrack</a>、<a href="https://arxiv.org/abs/2308.04526" target="_blank">ultrack</a>、<a href="https://cellpose.readthedocs.io/" target="_blank">Cellpose</a>、<a href="https://github.com/stardist/stardist" target="_blank">StarDist</a>、<a href="https://arxiv.org/abs/2208.11467" target="_blank">Linajea</a>。</p>
   <p style="margin-top:8px;color:var(--ink-soft)">隨附 notebooks：baseline／improved／local_validation（proxy）／official_validation（官方 metric）／gpu_validation（Cellpose）。數字擷取自 2026-06-30 的實跑，競賽進行中，內容可能更新。</p>
 </div></footer>
+
+<script>
+(function(){
+  var s=document.getElementById('pd-slider'); if(!s) return;
+  var BASE=0.80;
+  function render(){
+    var extra=+s.value/10;                 // 0.0 ~ 4.0（額外倍數：多抓幾倍的假細胞）
+    var mult=Math.max(0,1-0.1*extra);      // 過度偵測懲罰係數（示意）
+    var score=BASE*mult;
+    document.getElementById('pd-extra').textContent=Math.round(extra*100)+'%';
+    document.getElementById('pd-mult').textContent=mult.toFixed(2);
+    var sc=document.getElementById('pd-score'); sc.textContent=score.toFixed(2);
+    sc.style.color = score>=0.70?'var(--cell-soft)':(score>=0.55?'var(--amber)':'var(--rose)');
+    var real=10, fake=Math.min(Math.round(extra*10),50), html='';
+    for(var i=0;i<real;i++) html+='<span class="d" style="background:var(--cell)"></span>';
+    for(var j=0;j<fake;j++) html+='<span class="d" style="background:var(--rose)"></span>';
+    document.getElementById('pd-dots').innerHTML=html;
+    var note = extra<0.05 ? '剛剛好——沒有多餘的假細胞，分數＝連線品質分 0.80。'
+             : (extra<1.5 ? '假細胞（紅點）開始拖累分數：多抓不但沒加分，還被乘上懲罰係數。'
+             : '太多假細胞，分數被腰斬——這就是「少而精」贏過「多而雜」的原因。');
+    document.getElementById('pd-note').textContent=note;
+  }
+  s.addEventListener('input',render); render();
+})();
+
+// ===== 章節切換（一次看一章，避免單頁爆長）=====
+(function(){
+  var CH=[
+    {n:'這是什麼問題', ids:['intro','p']},
+    {n:'用 AI 找解法', ids:['how','ai','conv','build','valid','auto']},
+    {n:'一步步衝分數', ids:['gpu','combine','robust','res','cap','ultrack']},
+    {n:'帶得走的', ids:['lesson','log']}
+  ];
+  function secOf(id){var a=document.getElementById(id);return a?a.nextElementSibling:null;}
+  var nav=document.getElementById('chapnav');
+  var btns=[].slice.call(document.querySelectorAll('.chapbtn'));
+  function show(k){
+    CH.forEach(function(c,ci){c.ids.forEach(function(id){var el=secOf(id); if(el) el.style.display=(ci===k)?'':'none';});});
+    btns.forEach(function(b){b.classList.toggle('on',+b.dataset.ch===k);});
+    var h='';
+    h += (k>0) ? '<button class="cn prev" data-go="'+(k-1)+'"><span class="lbl">← 上一章</span>'+CH[k-1].n+'</button>' : '<span></span>';
+    h += (k<CH.length-1) ? '<button class="cn next" data-go="'+(k+1)+'"><span class="lbl">下一章 →</span>'+CH[k+1].n+'</button>' : '<span></span>';
+    nav.innerHTML=h;
+    [].slice.call(nav.querySelectorAll('button')).forEach(function(b){b.addEventListener('click',function(){show(+b.dataset.go);});});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){show(+b.dataset.ch);});});
+  show(0);
+})();
+</script>
 
 </body>
 </html>
