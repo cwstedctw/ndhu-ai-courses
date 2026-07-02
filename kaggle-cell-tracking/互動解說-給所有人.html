@@ -87,10 +87,12 @@
 <header class="hero"><div class="wrap">
   <div class="eyebrow">不用懂程式 · 看得懂的 AI 解題</div>
   <h1>我們怎麼教電腦<br><span class="hl">把每一顆細胞追到底</span></h1>
-  <p class="sub">一個真實的科學難題，我們用一整隊 AI 一步步解開。點點看——<b>分數會從 0.04 一路爬到 0.90</b>，下面那張圖，也會從「亂連一通」變成「幾乎全連對」。</p>
+  <p class="sub">一個真實的科學難題，我們用一整隊 AI 一步步解開。點點看——<b>分數會從 0.04 一路爬到 0.738（正式排行榜分數）</b>，下面那張圖，也會從「亂連一通」變成「幾乎全連對」。（頁面內的練習測試在自己電腦上能到 0.90，但那是<b>樂觀的本地數字</b>，送進比賽拿到的真分數是 0.738。）</p>
 </div></header>
 
 <div class="wrap">
+
+<p style="text-align:center;font-size:13px;color:var(--ink-soft);margin:-10px 0 18px">本頁內容為 2026-06-30 快照，2026-07-02 更新註記；最新進度請見文末「還在做的」。</p>
 
 <section>
   <h2><span class="em">🎬</span> 這到底在解什麼問題？</h2>
@@ -111,7 +113,7 @@
       <button class="vtab on" data-v="0">起步版<small>最樸素</small></button>
       <button class="vtab" data-v="1">改進版<small>AI 出點子</small></button>
       <button class="vtab" data-v="2">GPU 版<small>深度學習</small></button>
-      <button class="vtab" data-v="3">合成版<small>我們的新法</small></button>
+      <button class="vtab" data-v="3">合成版<small>本地測試</small></button>
     </div>
     <div class="vbody">
       <div class="picktip">👆 你點哪個版本，下面這張「追蹤圖」就跟著變——紅線變少、綠線變多，就是變好了：</div>
@@ -125,7 +127,7 @@
       <div class="countbar" id="countbar"></div>
 
       <div class="vtop">
-        <div class="scorebox"><div class="num" id="snum">0.04</div><div class="cap">官方分數</div></div>
+        <div class="scorebox"><div class="num" id="snum">0.04</div><div class="cap" id="scap">本地練習分數</div></div>
         <div class="barwrap">
           <div class="bartrack"><div class="barfill" id="sbar"></div></div>
           <div class="barscale"><span>0（亂猜）</span><span>1（完美）</span></div>
@@ -155,12 +157,12 @@
       <p>一顆細胞分裂成兩顆時，兩顆會<b>往相反方向彈開</b>（像捏著一團東西往兩邊一掰）。我們用這個常識判斷：如果兩顆<b>不是</b>往相反方向，那就不是分裂，只是剛好<b>擦身而過</b>——這樣才不會把「路過」看成「分裂」。</p>
     </div>
   </div>
-  <div class="callout win">加上這兩招，分數從 0.57 跳到 <b>0.90</b>。我們還特地做了對照實驗證明：<b>多出來的進步，主要是這兩招的功勞，不是抄來的。</b></div>
+  <div class="callout win">加上這兩招，分數從 0.57 跳到 <b>0.90</b>（自己電腦上的練習測試）；送進正式排行榜後是 <b>0.738</b>。我們還特地做了對照實驗證明：<b>多出來的進步，主要是這兩招的功勞，不是抄來的。</b></div>
 </section>
 
 <section>
   <h2><span class="em">🖥️</span> CPU 還是 GPU？為什麼「便宜的」反而贏</h2>
-  <p class="lead">有老師問了一個很好的問題：上面的版本裡，<b>用 GPU 深度學習那版只有 0.57，我們純 CPU 的合成版卻有 0.90</b>——GPU 不是比較高級嗎，怎麼反而輸？這其實是這堂課最值得停下來想的一題。先把兩種晶片想成兩種「個性」：</p>
+  <p class="lead">有老師問了一個很好的問題：上面的版本裡，<b>用 GPU 深度學習那版只有 0.57，我們純 CPU 的合成版卻有 0.90</b>（自己電腦測試；送上排行榜是 0.738）——GPU 不是比較高級嗎，怎麼反而輸？這其實是這堂課最值得停下來想的一題。先把兩種晶片想成兩種「個性」：</p>
   <div class="two">
     <div class="trick">
       <div class="ic">🧠</div><h3>CPU ＝ 幾個很會「想」的腦袋</h3>
@@ -186,6 +188,7 @@
     <div class="row"><span class="k">還在做的</span><span class="v" id="substatus">繼續往上衝，挑戰更高分</span></div>
   </div>
   <p style="font-size:14.5px;color:var(--ink-soft);margin-top:10px">註：用練習資料在自己電腦上測，會測到 0.90，但那一定比真排行榜樂觀（沒看過的資料一定更難）。<b>排行榜分數，才是「到底有沒有真的進步」的最終答案。</b></p>
+  <p style="font-size:14.5px;color:var(--ink-soft)"><b>後續更新：</b>接下來又重現公開古典解法，把分數再推高到 0.826 → 0.835 → 0.839（<b>待最終確認，尚未定案</b>）；同時正在挑戰做出完全屬於自己的原創方法（<b>進行中，尚未達成</b>）。</p>
 </section>
 
 <section>
@@ -218,9 +221,9 @@ const VERS = [
   { v:2, name:'GPU 版', score:0.57, color:'#c79bf0',
     exp:'改用一雙<b>「受過訓練的 AI 眼睛」</b>（深度學習）來看影像，幾乎每一顆真細胞都找得到。',
     why:'<b>細胞找得超準（幾乎一顆不漏），綠線又更多了。</b> 代價是要用比較貴的電腦（GPU）。' },
-  { v:3, name:'合成版', score:0.90, color:'#54e36b',
+  { v:3, name:'合成版', score:0.90, cap:'本地單樣本代理分數（非排行榜）', color:'#54e36b',
     exp:'<b>站在別人肩上</b>：找細胞借公開的強做法，再加上<b>我們自己想的兩招</b>——兩邊點頭連線、用物理認分裂。',
-    why:'<b>幾乎全是綠線（接對），分裂也認對了。</b> 找得準 ＋ 接得對 ＋ 分裂不亂認，三件事一次到位。' }
+    why:'<b>幾乎全是綠線（接對），分裂也認對了。</b> 找得準 ＋ 接得對 ＋ 分裂不亂認，三件事一次到位。<div class="why" style="border-left-color:var(--teal);margin-top:8px">⚠️ <b>這裡的 0.90 是自己電腦上的單一樣本練習分數，比較樂觀，不是比賽排行榜分數。</b>同一套方法送進 Kaggle 正式排行榜，測到的真分數是 <b>🏆 0.738</b>（詳見下方「我們真的拿去比賽了」）。</div>' }
 ];
 // 每個版本：每格細胞數固定（同一列＝同一顆細胞的真實軌跡），追錯比例 wrong，是否畫分裂 div
 const CFG = [
@@ -229,7 +232,8 @@ const CFG = [
 ];
 const snum=document.getElementById('snum'), sbar=document.getElementById('sbar'),
       vexp=document.getElementById('vexp'), scene=document.getElementById('scene'),
-      countbar=document.getElementById('countbar'), tabs=[...document.querySelectorAll('.vtab')];
+      countbar=document.getElementById('countbar'), tabs=[...document.querySelectorAll('.vtab')],
+      scap=document.getElementById('scap');
 let cur=-1;
 const COLS=4, COLX=[80,220,380,520], NCELL=5, seeded=(s)=>()=>(s=Math.sin(s*99991)*1e4, s-Math.floor(s));
 
@@ -271,6 +275,7 @@ function select(v, animate=true){
   const d=VERS[v];
   vexp.innerHTML = d.exp + `<div class="why">${d.why}</div>`;
   sbar.style.width = (d.score*100)+'%';
+  scap.textContent = d.cap || '本地練習分數';
   drawScene(v);
   const start=parseFloat(snum.textContent)||0, end=d.score, t0=performance.now();
   function step(t){ const k=Math.min((t-t0)/500,1); snum.textContent=(start+(end-start)*k).toFixed(2); if(k<1)requestAnimationFrame(step); }

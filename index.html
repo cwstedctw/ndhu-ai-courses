@@ -160,6 +160,7 @@
   }
   .card-tag.live { background: var(--gold); }
   .card-tag.soon { background: rgba(0,0,0,.32); }
+  .card-tag.external { background: var(--teal-dark); }
 
   .card-body { padding: 24px 24px 26px; display: flex; flex-direction: column; flex: 1; }
   .card-kicker { font-size: 13px; color: var(--teal); font-weight: 700; letter-spacing: .5px; margin-bottom: 8px; }
@@ -236,7 +237,7 @@
   </header>
 
   <main class="courses">
-    <div class="section-label">課程列表</div>
+    <div class="section-label">動手工作坊</div>
 
     <a class="card" href="courses/codex-workshop.html" data-screen-label="課程一卡片">
       <div class="card-banner live">
@@ -256,6 +257,8 @@
       </div>
     </a>
 
+    <div class="section-label">入門課程</div>
+
     <a class="card" href="courses/ai-team.html" data-screen-label="課程二卡片">
       <div class="card-banner live">
         <div class="banner-deco"></div>
@@ -263,8 +266,8 @@
       </div>
       <div class="card-body">
         <div class="card-kicker">課程二</div>
-        <h2>打造你的 AI 雙人小隊</h2>
-        <p class="card-desc">不用會寫程式，在自己電腦養出兩個會分工合作的 AI 夥伴：一個當領隊規劃、一個當隊員執行，你來當小隊長。</p>
+        <h2>打造你的 AI 小隊</h2>
+        <p class="card-desc">不用會寫程式，在自己電腦養出兩個會分工合作的 AI 夥伴：一個當領隊規劃、一個當隊員執行，你來當小隊長。先從雙人小隊起步，之後還能加隊友、變一整支團隊。</p>
         <div class="card-meta">
           <span class="chip">零基礎通識</span>
           <span class="chip">桌面 app 操作</span>
@@ -274,11 +277,51 @@
       </div>
     </a>
 
-    <!-- 要加第三門課？複製上面整個 <a class="card">…</a> 區塊，改 href / 課程N / 標題 / 描述 / chip 即可，grid 會自動排版。 -->
+    <a class="card" href="https://wailan-unity-vibecoding.netlify.app" target="_blank" rel="noopener" data-screen-label="外部連結卡片">
+      <div class="card-banner soon">
+        <div class="banner-deco"></div>
+        <span class="card-tag soon external">外部連結 ↗</span>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">延伸閱讀</div>
+        <h2>Unity × Claude Code：一起 vibe coding</h2>
+        <p class="card-desc">Mac／Windows 實機跑通的 Unity＋MCP＋Claude Code 環境建置圖文指南。</p>
+        <div class="card-meta">
+          <span class="chip">環境建置</span>
+          <span class="chip">圖文指南</span>
+          <span class="chip">Mac／Windows</span>
+        </div>
+        <span class="card-cta">前往閱讀 <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <div class="section-label">實作專案</div>
+
+    <a class="card" href="kaggle-cell-tracking/index.html" data-screen-label="Kaggle 專案卡片">
+      <div class="card-banner live">
+        <div class="banner-deco"></div>
+        <span class="card-tag live">開放中</span>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">實作專案</div>
+        <h2>用一隊 AI 解一道真實的 Kaggle 難題</h2>
+        <p class="card-desc">細胞追蹤賽全記錄：從 baseline 一路調到公開排行榜前段，誠實記下哪一招有效、哪一招踢到鐵板。</p>
+        <div class="card-meta">
+          <span class="chip">真實比賽</span>
+          <span class="chip">完整實錄</span>
+          <span class="chip">互動解說</span>
+        </div>
+        <span class="card-cta">看完整實錄 <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- 要加新卡片？複製上面整個 <a class="card">…</a> 區塊，改 href / kicker / 標題 / 描述 / chip 即可，grid 會自動排版。
+         要加新分組？在該組第一張卡片前加一行 <div class="section-label">分組名稱</div>。 -->
   </main>
 
   <footer>
     本課架構參考自 <b>537sonic《Codex 四小時案例式工作坊》</b>，內容為國立東華大學學生重寫。
+    ・ © 2026 ・ <a href="https://github.com/cwstedctw/ndhu-ai-courses" target="_blank" rel="noopener" style="color:inherit;">GitHub</a>
   </footer>
 
   <!-- ===== GSAP 捲動動畫 ===== -->

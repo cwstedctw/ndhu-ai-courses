@@ -48,12 +48,12 @@
   <h1>用 AI（和一隊 AI）<br>解一個<span class="hl">真實的 Kaggle 難題</span></h1>
   <p class="sub">一個完整的開發實錄：從「怎麼加入一個 Kaggle 競賽」，一路做到「用一隊 AI 讀懂公開高分解法、<b>combine 出贏過它們的新方法</b>」。每一步都有真數字、可重現。</p>
   <div class="prog">
-    <span class="pill">baseline <b>0.04</b></span><span class="ar">→</span>
-    <span class="pill">AI 改進 <b>0.34</b></span><span class="ar">→</span>
-    <span class="pill">GPU 深度學習 <b>0.57</b></span><span class="ar">→</span>
-    <span class="pill">合成新法 <b>0.90</b></span>
+    <span class="pill">baseline <b>0.14</b></span><span class="ar">→</span>
+    <span class="pill">站在巨人肩上 <b>0.701</b></span><span class="ar">→</span>
+    <span class="pill">泛化後 <b>0.738</b></span><span class="ar">→</span>
+    <span class="pill">重現古典法 <b>0.839</b>（待最終確認）</span>
   </div>
-  <p style="font-size:12.5px;color:var(--ink-soft);margin-top:4px">官方 metric、單樣本本地驗證；數字會比排行榜樂觀，但進步是真的、且可量化歸因。</p>
+  <p style="font-size:12.5px;color:var(--ink-soft);margin-top:4px">以上是官方 Kaggle 排行榜<b>真分數</b>。本地練習資料測出來的分數會更高（例如 0.90），但那是單樣本、樂觀，只拿來教學對照、不是排行榜成績。目前團隊已轉向做<b>自己原創的方法</b>（重建可信驗證平台＋自創物理對稱分裂閘），還在進行中，誠實天花板估計中段 0.85、尚未達成。</p>
 </div></header>
 
 <div class="wrap">
@@ -63,7 +63,7 @@
   <div class="grid">
     <a class="card star" href="互動解說-給所有人.html">
       <div class="tag">★ 給所有人 · 互動</div><h3>互動解說：看分數一版版爬上去</h3>
-      <p>不用懂程式：點四個版本，看分數從 0.04 爬到 0.90、圖會變、用大白話告訴你「為什麼變更好」。通識/非資訊背景最適合先看這個。</p></a>
+      <p>不用懂程式：點四個版本，看本地練習分數從 0.04 爬到 0.90（這是自己電腦上的樂觀值；送上比賽排行榜的真分數是 0.738）、圖會變、用大白話告訴你「為什麼變更好」。通識/非資訊背景最適合先看這個。</p></a>
     <a class="card" href="如何加入Kaggle競賽-細胞追蹤賽示範.html">
       <div class="tag">① 入門</div><h3>怎麼加入一個 Kaggle 競賽</h3>
       <p>用這個比賽當活教材：註冊 → 加入 → 看懂 Data/Evaluation → 跑起手式 → 提交 → 看排行榜。零基礎可跟。</p></a>
@@ -79,13 +79,14 @@
 <section>
   <h2>可執行的 Notebooks</h2>
   <div class="callout">這些是真的能在 Kaggle 上跑的 notebook（CC0 資料、Apache-2.0 改編）。可下載、或 Copy &amp; Edit 進自己的 Kaggle 跑。</div>
+  <div class="callout" style="border-left-color:var(--teal)"><b>分數怎麼看</b>：標「本地代理」的是單樣本本地測試，樂觀、非排行榜；標「排行榜」的是官方 Kaggle 真分數，才是實際名次依據。</div>
   <div class="nb-grid">
-    <a class="nbc" href="demo_cell_tracking_baseline.ipynb"><code>baseline.ipynb</code><span>官方起手式重寫（繁中註解）｜0.14</span></a>
-    <a class="nbc" href="demo_cell_tracking_improved.ipynb"><code>improved.ipynb</code><span>watershed＋分裂＋補軌｜0.34</span></a>
-    <a class="nbc" href="local_validation.ipynb"><code>local_validation.ipynb</code><span>proxy 本地驗證（看方向）</span></a>
-    <a class="nbc" href="official_validation.ipynb"><code>official_validation.ipynb</code><span>官方 metric 拿真分數</span></a>
-    <a class="nbc" href="gpu_validation.ipynb"><code>gpu_validation.ipynb</code><span>Cellpose 深度學習（GPU T4）｜0.57</span></a>
-    <a class="nbc" href="novel_validation.ipynb"><code>novel_validation.ipynb</code><span>合成新法＋ablation｜0.90</span></a>
+    <a class="nbc" href="demo_cell_tracking_baseline.ipynb"><code>baseline.ipynb</code><span>官方起手式重寫（繁中註解）｜排行榜 0.14</span></a>
+    <a class="nbc" href="demo_cell_tracking_improved.ipynb"><code>improved.ipynb</code><span>watershed＋分裂＋補軌｜本地代理 0.34</span></a>
+    <a class="nbc" href="local_validation.ipynb"><code>local_validation.ipynb</code><span>proxy 本地驗證（看方向，非排行榜）</span></a>
+    <a class="nbc" href="official_validation.ipynb"><code>official_validation.ipynb</code><span>官方 metric 拿真分數（排行榜 0.701→0.738）</span></a>
+    <a class="nbc" href="gpu_validation.ipynb"><code>gpu_validation.ipynb</code><span>Cellpose 深度學習（GPU T4）｜本地代理 0.57</span></a>
+    <a class="nbc" href="novel_validation.ipynb"><code>novel_validation.ipynb</code><span>合成新法＋ablation｜本地單樣本代理 0.90，排行榜實測 0.701→0.738</span></a>
     <a class="nbc" href="submit_novel.ipynb"><code>submit_novel.ipynb</code><span>正式提交版（test set → submission.csv）</span></a>
   </div>
 </section>
@@ -103,7 +104,7 @@
 
 <footer><div class="wrap">
   <p><b>比賽</b>：<a href="https://www.kaggle.com/competitions/biohub-cell-tracking-during-development" target="_blank">Biohub - Cell Tracking During Development</a>（CZ Biohub，CC0）｜<b>官方評分</b>：<a href="https://github.com/royerlab/kaggle-cell-tracking-competition" target="_blank">royerlab/kaggle-cell-tracking-competition</a>（開源）。</p>
-  <p style="margin-top:6px">改進方向綜合自一隊 AI 夥伴；偵測技巧致謝公開 <a href="https://www.kaggle.com/code/yusuketogashi/lb628-clean-room-no-gpu-baseline" target="_blank">LB628 no-GPU baseline</a>。教學用途；數字擷取自 2026-06-30 的實跑。</p>
+  <p style="margin-top:6px">改進方向綜合自一隊 AI 夥伴；偵測技巧致謝公開 <a href="https://www.kaggle.com/code/yusuketogashi/lb628-clean-room-no-gpu-baseline" target="_blank">LB628 no-GPU baseline</a>。教學用途；排行榜真分數與進度更新至 2026-07-02：重現公開古典法目前推到 0.839（<b>待最終確認</b>）；另一條「時序篩」新招實測 0.815，低於基準 0.826，<b>已判定失敗</b>；團隊現已轉向建構自己的原創方法（重建可信驗證平台＋自創物理對稱分裂閘＋土炮多假設追蹤器），<b>進行中、尚未達成</b>，誠實天花板估中段 0.85。本地單樣本代理分數（如 0.90）僅供教學對照，最初擷取自 2026-06-30 的實跑，非排行榜成績。</p>
 </div></footer>
 </body>
 </html>
