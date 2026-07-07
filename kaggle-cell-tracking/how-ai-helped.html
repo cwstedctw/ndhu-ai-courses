@@ -1,0 +1,296 @@
+<style>
+  :root{
+    --paper:#F4F6F8; --paper-2:#FFFFFF; --card:#EAEEF2;
+    --ink:#14202C; --ink-soft:#4A5866; --ink-faint:#7C8A96;
+    --indigo:#3B4DD1; --indigo-deep:#2C3AA8; --indigo-soft:rgba(59,77,209,.10);
+    --coral:#DE6E44; --coral-deep:#BC552F; --coral-soft:rgba(222,110,68,.12);
+    --console:#0F1620; --console-2:#161F2B; --console-ink:#CBD6E2; --console-dim:#7E90A2;
+    --ok:#2E9E6B; --line:#DCE3EA;
+    --cjk:"PingFang TC","Microsoft JhengHei","Noto Sans TC","Heiti TC",system-ui,sans-serif;
+    --mono:"Cascadia Code","Consolas","SF Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--cjk);
+    font-size:17px; line-height:1.85; -webkit-font-smoothing:antialiased; letter-spacing:.005em; overflow-x:hidden}
+
+  /* ---- top nav ---- */
+  .topbar{position:sticky; top:0; z-index:50; background:rgba(244,246,248,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+  .topbar-in{max-width:900px; margin:0 auto; padding:10px 18px}
+  .brand{display:flex; align-items:center; gap:.6em; font-weight:800; font-size:.95rem; letter-spacing:.01em; margin-bottom:8px}
+  .brand .bot{font-family:var(--mono); font-size:.78rem; color:var(--indigo); border:1px solid var(--indigo-soft); background:var(--indigo-soft); padding:.15em .6em; border-radius:6px}
+  .nav{display:flex; gap:4px; flex-wrap:wrap}
+  .nav button{font-family:inherit; font-size:.82rem; color:var(--ink-soft); background:transparent; border:1px solid transparent; border-radius:100px; padding:.4em .85em; cursor:pointer; display:flex; align-items:center; gap:.4em; white-space:nowrap}
+  .nav button .no{font-family:var(--mono); font-size:.72rem; color:var(--ink-faint)}
+  .nav button:hover{background:var(--card)}
+  .nav button.on{background:var(--indigo); color:#fff; border-color:var(--indigo)}
+  .nav button.on .no{color:rgba(255,255,255,.75)}
+  .nav button:focus-visible{outline:2px solid var(--indigo); outline-offset:2px}
+
+  /* ---- pages ---- */
+  .page{display:none; max-width:760px; margin:0 auto; padding:38px 22px 20px; animation:fade .35s ease}
+  .page.on{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion:reduce){ .page{animation:none} }
+
+  .eyebrow{display:flex; align-items:center; gap:.6em; font-size:.8rem; font-weight:700; letter-spacing:.14em; color:var(--indigo-deep); margin:0 0 .6em}
+  .eyebrow .num{font-family:var(--mono); background:var(--indigo); color:#fff; border-radius:6px; padding:.1em .5em; letter-spacing:0}
+  h1{font-size:clamp(1.9rem,5.2vw,2.7rem); font-weight:800; line-height:1.2; margin:.1em 0 .4em; text-wrap:balance; letter-spacing:.01em}
+  h2{font-size:clamp(1.35rem,3.4vw,1.75rem); font-weight:800; line-height:1.3; margin:1.4em 0 .5em; text-wrap:balance}
+  h3{font-size:1.1rem; font-weight:700; margin:1.3em 0 .3em}
+  p{margin:.7em 0} strong{font-weight:700}
+  .lead{font-size:1.16rem; color:var(--ink-soft); line-height:1.8}
+  em.a{font-style:normal; font-weight:700; color:var(--indigo-deep); background:linear-gradient(transparent 62%, var(--indigo-soft) 62%)}
+  em.h{font-style:normal; font-weight:700; color:var(--coral-deep); background:linear-gradient(transparent 62%, var(--coral-soft) 62%)}
+  code{font-family:var(--mono); font-size:.86em; background:var(--card); padding:.1em .45em; border-radius:5px; color:var(--indigo-deep)}
+  a{color:var(--indigo-deep); text-decoration:underline; text-underline-offset:2px}
+
+  /* ---- console card (the agent operating tools) ---- */
+  .console{background:var(--console); border-radius:12px; margin:18px 0; overflow:hidden; box-shadow:0 6px 24px rgba(15,22,32,.14)}
+  .console .bar{display:flex; align-items:center; gap:.5em; padding:8px 14px; background:var(--console-2); border-bottom:1px solid #23303f}
+  .console .bar .dot{width:10px; height:10px; border-radius:50%}
+  .console .bar .t{font-family:var(--mono); font-size:.74rem; color:var(--console-dim); margin-left:.5em}
+  .console .body{padding:14px 16px; font-family:var(--mono); font-size:.82rem; line-height:1.75; color:var(--console-ink); overflow-x:auto}
+  .console .body .c{color:#6Fe0b0} .console .body .p{color:#8fb0ff} .console .body .o{color:var(--console-dim)} .console .body .k{color:#e8b06a}
+  .console .body .line{white-space:pre}
+
+  /* ---- capability / note cards ---- */
+  .cap{background:var(--paper-2); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin:14px 0}
+  .cap h3{margin:.1em 0 .3em; display:flex; align-items:center; gap:.5em; font-size:1.06rem}
+  .cap .ic{font-size:1.15rem}
+  .cap p{margin:.3em 0 0; font-size:.98rem; color:var(--ink-soft)}
+  .capgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-top:12px}
+
+  .note{border-radius:14px; padding:18px 20px; margin:18px 0}
+  .note.h{background:linear-gradient(var(--paper-2),var(--coral-soft)); border:1px solid #F0D3C4}
+  .note.a{background:linear-gradient(var(--paper-2),var(--indigo-soft)); border:1px solid #CFD5F2}
+  .note .lbl{font-size:.78rem; font-weight:800; letter-spacing:.1em; margin-bottom:.3em}
+  .note.h .lbl{color:var(--coral-deep)} .note.a .lbl{color:var(--indigo-deep)}
+
+  /* ---- ladder ---- */
+  .rungs{list-style:none; margin:20px 0 0; padding:0; display:flex; flex-direction:column; gap:10px}
+  .rung{display:grid; grid-template-columns:64px 1fr; gap:14px; align-items:start; background:var(--paper-2); border:1px solid var(--line); border-radius:12px; padding:13px 15px}
+  .rung .sc{font-family:var(--mono); font-weight:800; font-size:1.05rem; color:var(--indigo-deep); font-variant-numeric:tabular-nums; text-align:right}
+  .rung.ours .sc{color:var(--coral-deep)}
+  .rung .wh{font-weight:700; font-size:1rem}
+  .rung .why{font-size:.92rem; color:var(--ink-soft); margin-top:.2em}
+  .rung.target{border-style:dashed; opacity:.85}
+  .rung.target .sc{color:var(--ink-faint)}
+
+  .tag{font-family:var(--mono); font-size:.68rem; font-weight:700; padding:.15em .55em; border-radius:5px; vertical-align:middle; margin-left:.4em}
+  .tag.b{background:var(--indigo-soft); color:var(--indigo-deep)} .tag.o{background:var(--coral-soft); color:var(--coral-deep)}
+
+  /* ---- footer prev/next ---- */
+  .pfoot{max-width:760px; margin:20px auto 60px; padding:0 22px; display:flex; justify-content:space-between; gap:12px}
+  .pfoot button{font-family:inherit; font-size:.9rem; font-weight:600; border:1px solid var(--line); background:var(--paper-2); color:var(--ink); border-radius:100px; padding:.55em 1.3em; cursor:pointer}
+  .pfoot button:hover:not(:disabled){border-color:var(--indigo); color:var(--indigo-deep)}
+  .pfoot button:disabled{opacity:.4; cursor:default}
+  .pfoot button.next{background:var(--indigo); color:#fff; border-color:var(--indigo)}
+
+  figure{margin:20px 0 6px} svg{max-width:100%; height:auto; display:block} figcaption{font-size:.85rem; color:var(--ink-faint); text-align:center; margin-top:8px}
+  .disclaimer{font-size:.82rem; color:var(--ink-faint); border-top:1px solid var(--line); margin-top:26px; padding-top:14px}
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">🤖 一個 AI Agent 怎麼幫忙解一場真實比賽 <span class="bot">Claude Code × Kaggle</span></div>
+    <nav class="nav" id="nav"></nav>
+  </div>
+</div>
+
+<!-- ============ PAGE 1 ============ -->
+<section class="page on" data-t="序：一場實驗">
+  <p class="eyebrow"><span class="num">00</span> 這是什麼</p>
+  <h1>不是聊天，是「動手」：<br>一個 AI Agent 的解題日記</h1>
+  <p class="lead">這份文件不講細胞生物學（那份在<a href="https://cwstedctw.github.io/ndhu-ai-courses/kaggle-cell-tracking/explainer.html" target="_blank" rel="noopener">另一頁</a>）。這裡要給你看的是<strong>幕後</strong>——一個 AI agent（Claude Code，我們叫它「洄瀾」）和一位老師（文盛老師），怎麼合力去解一場<em class="a">真實的國際 AI 競賽</em>，以及這個 AI 到底「能做什麼」。</p>
+  <p style="color:var(--ink-soft);font-size:1rem">💡 還不清楚這場比賽在解什麼？建議先看科普姊妹頁《生命，是怎麼長出來的？》（就是上面那個「另一頁」連結），再回來看幕後，會更好懂。</p>
+
+  <div class="note a">
+    <div class="lbl">先講結論</div>
+    <p style="margin:0">在一個 500 多隊、獎金約新台幣 200 萬的國際細胞追蹤賽裡，我們爬到 <strong>0.897 分</strong>（滿分 1.0）、大約<strong>第 10 名</strong>，離世界第一只差 0.009。<strong>老實說</strong>：這分數大部分是「讀懂並重現公開的作法 ＋ 調參數」換來的，加上一點我們自己的東西。而這一路，AI agent 不只出一張嘴，它<strong>親手</strong>跑程式、開雲端 GPU（專門算 AI 的高速晶片）、自己除錯、自己重新登入、找另一個 AI 幫畫圖，還做出了你正在看的這個網頁。</p>
+  </div>
+
+  <p>很多人以為「AI」就是問一句、答一句的聊天機器人。這份文件想讓你看到另一種 AI——<em class="a">agent（代理人）</em>：你給它目標，它會自己規劃、動手用工具、遇到錯誤自己修、跑不完的活自己排隊等，像一個很勤快、動作很快、但需要你把方向的隊友。</p>
+
+  <p style="color:var(--ink-soft)">上面的頁籤可以跳著看。建議順著看：<strong>舞台與傢伙 → 歷程 → 方法與抉擇 → AI 幫了什麼 → 給你的啟示</strong>。</p>
+</section>
+
+<!-- ============ PAGE 2 ============ -->
+<section class="page" data-t="舞台與傢伙">
+  <p class="eyebrow"><span class="num">01</span> 舞台與傢伙</p>
+  <h1>這局是怎麼「接起來」的</h1>
+  <p class="lead">要看懂 AI 能幫什麼，先看它手上有哪些傢伙、跟誰配合。</p>
+
+  <figure>
+    <svg viewBox="0 0 720 400" role="img" aria-label="AI agent 與人、Kaggle 雲端、工具、隊友的連接圖">
+      <defs><radialGradient id="hub" cx="50%" cy="45%"><stop offset="0%" stop-color="#5B6BE8"/><stop offset="100%" stop-color="#3B4DD1"/></radialGradient></defs>
+      <!-- links -->
+      <g stroke="#C7D0D9" stroke-width="2">
+        <line x1="360" y1="200" x2="360" y2="70"/><line x1="360" y1="200" x2="150" y2="120"/>
+        <line x1="360" y1="200" x2="570" y2="120"/><line x1="360" y1="200" x2="150" y2="300"/>
+        <line x1="360" y1="200" x2="570" y2="300"/><line x1="360" y1="200" x2="360" y2="340"/>
+      </g>
+      <!-- human -->
+      <g><circle cx="360" cy="60" r="34" fill="#fff" stroke="#DE6E44" stroke-width="2.5"/><text x="360" y="55" text-anchor="middle" font-size="22">🧑‍🏫</text><text x="360" y="74" text-anchor="middle" font-size="10" fill="#BC552F" font-family="sans-serif" font-weight="700">文盛 老師</text></g>
+      <!-- hub agent -->
+      <circle cx="360" cy="200" r="52" fill="url(#hub)"/><text x="360" y="196" text-anchor="middle" font-size="24">🤖</text><text x="360" y="216" text-anchor="middle" font-size="11" fill="#fff" font-family="sans-serif" font-weight="700">洄瀾 / Claude Code</text>
+      <!-- spokes -->
+      <g font-family="sans-serif">
+        <g><circle cx="150" cy="110" r="30" fill="#fff" stroke="#C7D0D9" stroke-width="2"/><text x="150" y="106" text-anchor="middle" font-size="18">☁️</text><text x="150" y="122" text-anchor="middle" font-size="9.5" fill="#4A5866">Kaggle 雲端 GPU</text></g>
+        <g><circle cx="570" cy="110" r="30" fill="#fff" stroke="#C7D0D9" stroke-width="2"/><text x="570" y="106" text-anchor="middle" font-size="18">⌨️</text><text x="570" y="122" text-anchor="middle" font-size="9.5" fill="#4A5866">kaggle 指令列</text></g>
+        <g><circle cx="150" cy="310" r="30" fill="#fff" stroke="#C7D0D9" stroke-width="2"/><text x="150" y="306" text-anchor="middle" font-size="18">🔑</text><text x="150" y="322" text-anchor="middle" font-size="9.5" fill="#4A5866">自己重新登入</text></g>
+        <g><circle cx="570" cy="310" r="30" fill="#fff" stroke="#C7D0D9" stroke-width="2"/><text x="570" y="306" text-anchor="middle" font-size="18">🎨</text><text x="570" y="322" text-anchor="middle" font-size="9.5" fill="#4A5866">隊友立霧(另一個 AI)</text></g>
+        <g><circle cx="360" cy="350" r="30" fill="#fff" stroke="#C7D0D9" stroke-width="2"/><text x="360" y="346" text-anchor="middle" font-size="18">📄</text><text x="360" y="362" text-anchor="middle" font-size="9.5" fill="#4A5866">做出這個網頁</text></g>
+      </g>
+    </svg>
+    <figcaption>中間是 AI agent；它一手接住老師的目標，一手去操作各種工具與隊友。</figcaption>
+  </figure>
+
+  <h2>台上的角色</h2>
+  <div class="capgrid">
+    <div class="cap"><h3><span class="ic">🧑‍🏫</span>人（文盛 老師）</h3><p>定方向、做判斷、把關、對不可逆的動作（例如按下提交）拍板。也負責在 AI 太早喊「到頂了」時踹一腳。</p></div>
+    <div class="cap"><h3><span class="ic">🤖</span>AI agent（洄瀾）</h3><p>那雙手：讀寫程式、跑指令、開雲端運算、盯結果、除錯、寫報告、做教材。動作快、不喊累，但需要人把方向。</p></div>
+    <div class="cap"><h3><span class="ic">☁️</span>Kaggle（賽場）</h3><p>全球 AI 競賽平台，還提供<strong>免費雲端 GPU</strong>。重的模型不在老師的筆電上跑，是送到 Kaggle 的伺服器上算。</p></div>
+  </div>
+
+  <h2>AI 實際會操作的工具</h2>
+  <p>這些不是比喻，就是這個 agent 真的在用的東西（下面那行指令看不懂沒關係，重點是：這些都是 AI 自己打出來的）：</p>
+
+  <div class="console">
+    <div class="bar"><span class="dot" style="background:#E06C60"></span><span class="dot" style="background:#E6B34D"></span><span class="dot" style="background:#5FB87A"></span><span class="t">agent 把一份 notebook（能一格一格跑的程式檔）送上 Kaggle 的雲端 GPU 跑</span></div>
+    <div class="body"><div class="line"><span class="p">$</span> <span class="c">kaggle kernels push</span> -p ./experiment</div><div class="line"><span class="o">→ Kernel version 1 successfully pushed（在 Kaggle 的 T4 GPU 上開始跑）</span></div><div class="line"><span class="p">$</span> <span class="c">kaggle kernels status</span> chenwensheng/experiment</div><div class="line"><span class="o">→ COMPLETE　</span><span class="p">$</span> <span class="c">kaggle competitions submit</span> ... <span class="k">-f submission.csv</span></div></div>
+  </div>
+
+  <div class="capgrid">
+    <div class="cap"><h3><span class="ic">⌨️</span>指令列自動化</h3><p>把程式送上 Kaggle、在雲端跑、拉回結果、提交，<strong>全用指令</strong>，不用手動拖檔、不用跟網頁編輯器奮鬥。</p></div>
+    <div class="cap"><h3><span class="ic">☁️</span>借別人的 GPU</h3><p>3D 深度學習模型很吃算力。agent 把工作<strong>外包給 Kaggle 的雲端顯示卡</strong>（兩張 T4），自己只負責指揮與收結果。</p></div>
+    <div class="cap"><h3><span class="ic">🔑</span>自己重新登入 ★</h3><p>登入權杖（登入用的通行證）每小時就過期。以前得請老師手動重登；<strong>後來 AI 學會自己重登</strong>，打開登入頁、按授權、讀回授權碼、餵回工具，全程自己來。</p></div>
+    <div class="cap"><h3><span class="ic">🎨</span>找 AI 隊友</h3><p>要畫插圖時，agent 把任務<strong>派給另一個 AI（立霧，跑在別家模型上）</strong>，它畫、回報，洄瀾再驗收挑選。</p></div>
+  </div>
+
+  <div class="note a">
+    <div class="lbl">誠實：能做什麼、不能做什麼</div>
+    <p style="margin:0"><strong>能：</strong>跑程式、開雲端運算、讀寫檔案、除錯、排隊等結果、寫報告與網頁、派工給別的 AI、自己重新登入。<br><strong>不能（或不該自己來）：</strong>定大方向、做價值判斷、對「不可逆」的動作（送出提交、刪東西、對外發布）拍板，這些留給人。<strong>AI 是很強的手，方向盤還在人手上。</strong></p>
+  </div>
+</section>
+
+<!-- ============ PAGE 3 ============ -->
+<section class="page" data-t="歷程">
+  <p class="eyebrow"><span class="num">02</span> 歷程</p>
+  <h1>從 0.738 爬到 0.897：每一步為什麼</h1>
+  <p class="lead">分數越高越好。<span class="tag o">粉紅</span>＝我們自己做的、<span class="tag b">藍綠</span>＝重現/借公開的。重點不只在數字，在<strong>每一步為什麼這樣走</strong>。</p>
+
+  <ol class="rungs">
+    <li class="rung ours"><div class="sc">0.738</div><div><div class="wh">我們從零自己寫的管線 <span class="tag o">我們的</span></div><div class="why">先自己動手做一版，用「做得出來」逼自己真的搞懂問題。能跑，但卡住。<strong>AI 幫的：</strong>寫出整條偵測＋連結的程式、反覆試。</div></div></li>
+    <li class="rung"><div class="sc">0.857</div><div><div class="wh">重現公開的古典解法 ＋ 補「軌跡平滑」 <span class="tag b">借的</span></div><div class="why">為什麼轉向？老師的規矩：<em class="h">動手改自己的碼前，先查排行榜＋別人公開的作法</em>。一查發現有人把 code 公開了，還缺一招「把抖動的路徑拉直」。<strong>AI 幫的：</strong>讀懂公開程式、找出我們缺的那一招、重現。</div></div></li>
+    <li class="rung"><div class="sc">0.885</div><div><div class="wh">重現公開的 AI 模型解法 <span class="tag b">借的</span></div><div class="why">最大領悟：連「訓練好的模型權重」（模型學到的本事，存成一份檔案）都是<strong>公開</strong>的。我原本一口咬定是別人的秘密，結果一查就在那。<em class="h">別假設有牆，去看真實狀態。</em></div></div></li>
+    <li class="rung"><div class="sc">0.890</div><div><div class="wh">把公開最強零件組起來 ＋ 我們的過濾 <span class="tag b">大多借的</span></div><div class="why">把最好的公開零件拼起來，加上我們自己寫的「乾淨過濾」。<strong>AI 幫的：</strong>一個個試哪種組合有效、比較結果。</div></div></li>
+    <li class="rung ours"><div class="sc">0.897</div><div><div class="wh">把一顆參數調對 <span class="tag o">我們調的</span></div><div class="why">老師一再提醒：<em class="h">別急著喊「這就是極限」，還有參數可以調。</em>把 AI 最佳化器的一顆旋鈕從 0.1 調到 0.3，就多了 0.007 分、衝進前段。他不只一次這樣提醒，而且每次都對。</div></div></li>
+    <li class="rung target"><div class="sc">0.906</div><div><div class="wh">世界第一（別隊、解法不公開）</div><div class="why">我們離榜首只差 0.009。我們也交出了「自己微調的模型」試著超過公開前線，分數計算中。</div></div></li>
+  </ol>
+
+  <div class="note h">
+    <div class="lbl">這一頁最重要的兩句話（都是人教 AI 的）</div>
+    <p style="margin:0">① <strong>動手前先查別人公開了什麼</strong>，重現比重造聰明。<br>② <strong>別太早喊到頂</strong>，很多次以為到極限，一調參數又上去了。</p>
+  </div>
+</section>
+
+<!-- ============ PAGE 4 ============ -->
+<section class="page" data-t="方法與抉擇">
+  <p class="eyebrow"><span class="num">03</span> 方法與抉擇</p>
+  <h1>為什麼換、為什麼選：藏在分數後面的判斷</h1>
+  <p class="lead">每一次「換方法」都不是亂試，背後有理由。這頁把幾個關鍵決定攤開講。</p>
+
+  <h3>① 先「規則法」，再「AI 模型法」</h3>
+  <p><strong>規則法</strong>＝寫死的步驟（找亮點、把近的連起來），好懂、跑得快。<strong>AI 模型法</strong>＝訓練一個神經網路（一種像大腦、會從例子學習的模型）自己認細胞、自己判斷該連誰，比較聰明、能抓到暗淡細胞。<br><strong>為什麼這樣排？</strong>先用規則法親手做，是為了<em class="a">真的搞懂問題長怎樣</em>；等摸透了、也撞到規則法的天花板，再轉去重現更強的 AI 模型法（天花板更高）。</p>
+
+  <h3>② 為什麼一路「往精準、不往貪心」走</h3>
+  <p>這場比賽的計分有個怪脾氣：<strong>猜太多會扣分</strong>。所以我們每次想「多抓一點細胞」都是負分收場，反而「清乾淨、連準確」才加分。這個發現<em class="a">直接決定了後面所有調整的方向</em>，包括那顆讓我們從 0.890 上到 0.897 的旋鈕（它的作用正是「叫最佳化器少開一些可疑的新軌跡」）。</p>
+  <div class="note a"><div class="lbl">AI 怎麼幫</div><p style="margin:0">同一份資料，AI 反覆做「加一點 / 減一點」的對照實驗，把「多抓細胞反而傷分」這條規律驗證了<strong>三、四次</strong>才敢當結論，不是憑感覺，是拿真實分數反覆確認。</p></div>
+
+  <h3>③ 那一招讓分數跳最多：軌跡平滑</h3>
+  <p>從 0.738 跳到 0.857，靠的不是高深模型，而是一招<strong>「軌跡平滑」</strong>：細胞真正的路徑其實蠻順的，但電腦每一格量到的位置會抖來抖去，抖動害得連連看連錯。把位置拉順，配對一下就準了。<em class="a">問題不在抓多抓少，在量得夠不夠準</em>。這一步點破了我們卡關的矛盾。</p>
+
+  <h3>④ 最後一搏：微調（fine-tuning）我們自己的模型</h3>
+  <p><strong>微調</strong>＝拿一個已經訓練好的模型，再用資料多教它一點點。這是現在 AI 最主流的做法。<br><strong>為什麼試？</strong>想做出一塊「真正屬於我們、能贏過公開前線」的東西。<br><strong>為什麼可能沒用？</strong>我們拿去微調的資料，就是那個模型早就看過的同一批，等於叫一個老師傅把他本來就會的菜再練一次，可能更順、但不會突然變神。所以我們只<strong>輕輕推</strong>（怕它「背太熟、換題目反而退步」）。到底有沒有用，<strong>要等比賽分數，不自己說有效。</strong></p>
+  <div class="note a"><div class="lbl">AI 怎麼幫</div><p style="margin:0">AI 把公開的訓練程式接起來、補好接口、在雲端 GPU 上訓練、把訓練好的權重打包、再送去比賽，這整條「自己訓一個模型」的流程，都是 agent 一手串起來的。</p></div>
+</section>
+
+<!-- ============ PAGE 5 ============ -->
+<section class="page" data-t="AI 幫了什麼">
+  <p class="eyebrow"><span class="num">04</span> 這才是重點</p>
+  <h1>攤開來看：AI agent 到底幫了哪些</h1>
+  <p class="lead">下面每一項，都是這次<strong>真的發生</strong>的事。這也是為什麼我們覺得它是「AI agent 怎麼幫人」的好例子。</p>
+
+  <div class="capgrid">
+    <div class="cap"><h3><span class="ic">🧪</span>大量跑實驗</h3><p>把幾十個「參數不同」的版本一個個送上 Kaggle 雲端跑，拉回結果、比較優劣，換人手動做，要熬好幾個通宵。</p></div>
+    <div class="cap"><h3><span class="ic">🔀</span>自己排隊、自動提交</h3><p>雲端一次只能跑 2 個、一天只能交 5 次。AI <strong>寫了一支背景程式</strong>替自己排隊：跑完一個就補下一個、驗證沒問題就自動提交，連續顧好幾個小時。</p></div>
+    <div class="cap"><h3><span class="ic">🐛</span>自己除錯</h3><p>過程踩到三個工具坑（名字卡住、權限唯讀、狀態誤判把成功當失敗）。AI <strong>自己診斷、自己繞過</strong>，還把一個被誤判成「失敗」、其實已經跑完的結果救了回來。</p></div>
+    <div class="cap"><h3><span class="ic">🔑</span>自己重新登入 ★</h3><p>登入權杖一小時就過期。AI 學會<strong>自己重跑登入流程</strong>（開頁面、按授權、讀回授權碼、餵回去），不用每次都叫醒老師。</p></div>
+    <div class="cap"><h3><span class="ic">🎨</span>找隊友補能力</h3><p>自己不擅長畫圖，就<strong>把畫圖派給另一個 AI（立霧）</strong>；畫完逐張把關，還擋下一張「看起來像精子、會誤導學生」的圖，請它重畫。</p></div>
+    <div class="cap"><h3><span class="ic">📄</span>做出互動教材</h3><p>你正在看的這個<strong>多頁互動網頁</strong>、還有另一份能播放縮時影片的科普頁，都是 AI 寫的 HTML／CSS／JavaScript，而且<strong>在真的瀏覽器裡測過</strong>會動。</p></div>
+  </div>
+
+  <div class="console">
+    <div class="bar"><span class="dot" style="background:#E06C60"></span><span class="dot" style="background:#E6B34D"></span><span class="dot" style="background:#5Fb87a"></span><span class="t">背景編排器：跑完就交、連續顧好幾小時</span></div>
+    <div class="body"><div class="line"><span class="o">[10:34] </span><span class="c">SUBMITTED</span> ilp5x <span class="o">(246,994 rows)</span></div><div class="line"><span class="o">[10:36] </span><span class="c">SUBMITTED</span> det995x <span class="o">(244,534 rows)</span></div><div class="line"><span class="o">[10:45] </span><span class="c">SUBMITTED</span> combo <span class="o">→ ===== ALL DONE =====</span></div><div class="line"><span class="k">// 一個被誤判失敗的結果，AI 查出其實已完成、手動救回並補交</span></div></div>
+  </div>
+
+  <div class="note h">
+    <div class="lbl">但是，方向盤還在人手上</div>
+    <p style="margin:0">這局能成，靠的不只是 AI 勤快。是老師<strong>定方向</strong>（要做這場比賽、當教學專案）、<strong>做判斷</strong>（「先查公開的」「別喊到頂」都是他教的）、<strong>把關拍板</strong>（每次不可逆的提交、要不要用某張圖）。AI 把「重複、繁瑣、要快、要熬夜盯」的部分扛走，人專心在「想清楚、下判斷」。<strong>這才是好的分工。</strong></p>
+  </div>
+</section>
+
+<!-- ============ PAGE 6 ============ -->
+<section class="page" data-t="給你的啟示">
+  <p class="eyebrow"><span class="num">05</span> 帶走這幾點</p>
+  <h1>如果你也想用 AI 解一個真問題</h1>
+
+  <div class="capgrid">
+    <div class="cap"><h3><span class="ic">🧭</span>你負責方向，AI 負責動手</h3><p>你不用會寫全部程式。你要會的是：<strong>想清楚問題、做判斷、把關</strong>，然後讓 AI 去跑、去試、去除錯。</p></div>
+    <div class="cap"><h3><span class="ic">🔍</span>先站在別人肩膀上</h3><p>動手前先查「別人公開了什麼」。<strong>重現＋讀懂＋改一點</strong>，比從零重造聰明太多，真實世界的 AI 幾乎都這樣做。</p></div>
+    <div class="cap"><h3><span class="ic">🧗</span>別太早說「到頂了」</h3><p>我們好幾次以為到極限，一調參數又上去。先確認那真的是牆，再放棄。</p></div>
+    <div class="cap"><h3><span class="ic">🤝</span>誠實分清楚來源</h3><p>哪塊是你的、哪塊是借的、哪塊是 AI 做的，說得清楚，本身就是專業。</p></div>
+  </div>
+
+  <div class="note a">
+    <div class="lbl">一句話總結</div>
+    <p style="margin:0; font-size:1.12rem"><strong>AI agent 是一雙很強、很快、不喊累的手；但要它幫上忙，你得先成為那個「會想、會判斷、會把關」的腦。</strong>這場比賽就是一個活生生的例子：人＋AI，各做自己最擅長的那一半。</p>
+  </div>
+
+  <a href="https://cwstedctw.github.io/ndhu-ai-courses/kaggle-cell-tracking/explainer.html" target="_blank" rel="noopener" style="display:block;text-decoration:none;color:var(--ink);background:linear-gradient(var(--paper-2),var(--indigo-soft));border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:8px 0 4px">
+    <div style="font-size:.8rem;font-weight:800;letter-spacing:.1em;color:var(--indigo-deep)">🔬 姊妹頁 · 換一個角度看</div>
+    <div style="font-weight:800;font-size:1.12rem;margin:.25em 0;color:var(--ink)">想懂細胞追蹤的「科學本身」？</div>
+    <div style="font-size:.95rem;color:var(--ink-soft)">另一份教材《生命，是怎麼長出來的？》——用真實顯微影片＋白話，講清楚這場比賽在解什麼、資料長什麼樣、怎麼算分。點我前往 →</div>
+  </a>
+
+  <p class="disclaimer">寫稿當下，我們最佳成績 0.897、約第 10 名；今天送出的 5 個實驗（含自己微調的模型）分數計算中。本頁由 AI agent（洄瀾 / Claude Code）製作，內容經人核對；配圖為 AI 生成之示意，非真實資料。姊妹頁（細胞追蹤的科學白話版）連結見上方，或第一頁。</p>
+</section>
+
+<div class="pfoot"><button id="prev">← 上一頁</button><button id="next" class="next">下一頁 →</button></div>
+
+<script>
+(function(){
+  var pages=[].slice.call(document.querySelectorAll('.page'));
+  var nav=document.getElementById('nav'), prev=document.getElementById('prev'), next=document.getElementById('next');
+  var cur=0;
+  pages.forEach(function(pg,i){
+    var b=document.createElement('button');
+    b.innerHTML='<span class="no">'+String(i).padStart(2,'0')+'</span> '+pg.getAttribute('data-t');
+    b.onclick=function(){ go(i); };
+    nav.appendChild(b);
+  });
+  var tabs=[].slice.call(nav.children);
+  function go(i){
+    cur=Math.max(0,Math.min(pages.length-1,i));
+    pages.forEach(function(p,j){ p.classList.toggle('on', j===cur); });
+    tabs.forEach(function(t,j){ t.classList.toggle('on', j===cur); });
+    prev.disabled=(cur===0); next.disabled=(cur===pages.length-1);
+    next.textContent = cur===pages.length-1 ? '完 ✓' : '下一頁 →';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  prev.onclick=function(){ go(cur-1); };
+  next.onclick=function(){ go(cur+1); };
+  go(0);
+})();
+</script>
